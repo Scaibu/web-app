@@ -65,11 +65,11 @@ A root-cause analysis identified four compounding architectural defects across t
 flowchart TB
     subgraph ClientBrowser["Client Browser Environment"]
         User["Browser User / Agent"]
-        CookieJar[("Browser Cookies\nauthjs.session-token\nuser_role")]
+        CookieJar[("Browser Cookies (authjs.session-token, user_role)")]
         SignInUI["SignInPage (/auth/sign-in)"]
         AppShellUI["AppShell & Layout (/)"]
-        ReduxStore["Redux Store & Sagas\n(auth.slice & auth.saga)"]
-        ClientExecutor["ApiExecutor (executor.ts)\nUnwraps { data: ... }"]
+        ReduxStore["Redux Store & Sagas (auth.slice & auth.saga)"]
+        ClientExecutor["ApiExecutor (executor.ts)"]
     end
 
     subgraph EdgeMiddlewareLayer["Next.js Edge Middleware Boundary (:31400)"]
@@ -97,24 +97,34 @@ flowchart TB
         AlloyDB[("AlloyDB Omni (:31412)")]
     end
 
-    User -->|Navigate /| Middleware
-    Middleware --> StepTracing --> StepCorrelation --> StepAuthGuard
-    StepAuthGuard -->|No Cookie & Protected| RedirectEngine -->|307 Redirect| SignInUI
-    StepAuthGuard -->|Cookie Present| AppShellUI
+    User -->|"Navigate /"| Middleware
+    Middleware --> StepTracing
+    StepTracing --> StepCorrelation
+    StepCorrelation --> StepAuthGuard
+    StepAuthGuard -->|"No Cookie & Protected"| RedirectEngine
+    RedirectEngine -->|"307 Redirect"| SignInUI
+    StepAuthGuard -->|"Cookie Present"| AppShellUI
 
-    User -->|Submit Credentials| SignInUI
+    User -->|"Submit Credentials"| SignInUI
     SignInUI --> ReduxStore
     ReduxStore --> ClientExecutor
-    ClientExecutor --> Admission --> ContextIso --> SSRF --> RateLimiter --> Singleflight --> CacheStore --> CircuitBreakerEngine --> NetworkExec
-    NetworkExec -->|Resolve Service| Discovery
-    NetworkExec -->|POST /api/v1/auth/sign-in| AuthBackend
+    ClientExecutor --> Admission
+    Admission --> ContextIso
+    ContextIso --> SSRF
+    SSRF --> RateLimiter
+    RateLimiter --> Singleflight
+    Singleflight --> CacheStore
+    CacheStore --> CircuitBreakerEngine
+    CircuitBreakerEngine --> NetworkExec
+    NetworkExec -->|"Resolve Service"| Discovery
+    NetworkExec -->|"POST /api/v1/auth/sign-in"| AuthBackend
     AuthBackend --> AlloyDB
-    AuthBackend -->> NetworkExec: { status: 'success', data: { token, user } }
-    NetworkExec -->> ClientExecutor: Raw Response
-    ClientExecutor -->> ReduxStore: Unwrapped { status, message, token, user }
-    ReduxStore -->|setAuthCookies| CookieJar
-    ReduxStore -->|authSuccess| SignInUI
-    SignInUI -->|router.push('/')| Middleware
+    AuthBackend -.->|"HTTP Response (status: success, data)"| NetworkExec
+    NetworkExec -.->|"Raw Response Payload"| ClientExecutor
+    ClientExecutor -.->|"Unwrapped (token, payload, user)"| ReduxStore
+    ReduxStore -->|"setAuthCookies"| CookieJar
+    ReduxStore -->|"authSuccess"| SignInUI
+    SignInUI -->|"router.push('/')"| Middleware
 ```
 
 ---
@@ -127,28 +137,28 @@ flowchart TB
 stateDiagram-v2
     [*] --> CLOSED: Initial Startup
 
-    CLOSED --> CLOSED: Request Succeeds / 4xx Handled (failures = 0)
-    CLOSED --> OPEN: Exhausted Retries >= 5 Failures\n(Cooldown Timer = now + 10s)
+    CLOSED --> CLOSED: Request Succeeds / 4xx Handled
+    CLOSED --> OPEN: Exhausted Retries (Failures >= 5)
 
-    OPEN --> OPEN: Request Attempted within 10s\n(Fast Fail: Throw 503 Circuit Breaker is OPEN)
-    OPEN --> HALF_OPEN: Request Attempted after 10s\n(now >= nextAttemptTime)
+    OPEN --> OPEN: Request Attempted within 10s (Fast Fail 503)
+    OPEN --> HALF_OPEN: Request Attempted after 10s Cooldown
 
-    HALF_OPEN --> CLOSED: Trial Probe Request Succeeds\n(Reset failures = 0, state = CLOSED)
-    HALF_OPEN --> OPEN: Trial Probe Request Fails\n(Reset Cooldown Timer = now + 10s)
+    HALF_OPEN --> CLOSED: Trial Probe Succeeds (Reset)
+    HALF_OPEN --> OPEN: Trial Probe Fails (Reset Cooldown)
 ```
 
 ### 3.2 LLD: Edge Route Guard & Authentication Flowchart
 
 ```mermaid
 flowchart TD
-    Req[Incoming HTTP Request] --> MatchStatic{Is Static Asset or Next internal?\n_next/*, favicon.ico, api/*}
-    MatchStatic -- Yes --> Allow[Allow Next.js Pipeline Execution]
-    MatchStatic -- No --> MatchPublic{Is Public Route?\n/auth/sign-in, /auth/sign-up, /auth/callback}
-    MatchPublic -- Yes --> Allow
-    MatchPublic -- No --> CheckCookie{Is Session Cookie Present?\nauthjs.session-token}
-    CheckCookie -- Yes & Valid --> Allow
-    CheckCookie -- No / Expired --> Issue307[Construct 307 Redirect\n/auth/sign-in?callbackUrl=encodedPath]
-    Issue307 --> ReturnClient[Return HTTP 307 to Browser]
+    Req["Incoming HTTP Request"] --> MatchStatic{"Is Static Asset or Next Internal? (_next, favicon.ico, api)"}
+    MatchStatic -- "Yes" --> Allow["Allow Next.js Pipeline Execution"]
+    MatchStatic -- "No" --> MatchPublic{"Is Public Route? (/auth/sign-in, /auth/sign-up, /auth/callback)"}
+    MatchPublic -- "Yes" --> Allow
+    MatchPublic -- "No" --> CheckCookie{"Is Session Cookie Present? (authjs.session-token)"}
+    CheckCookie -- "Yes & Valid" --> Allow
+    CheckCookie -- "No / Expired" --> Issue307["Construct 307 Redirect to /auth/sign-in"]
+    Issue307 --> ReturnClient["Return HTTP 307 to Browser"]
 ```
 
 ### 3.3 LLD: Authentication & Cookie Lifecycle Sequence
@@ -166,19 +176,19 @@ sequenceDiagram
     participant Middleware as Next.js Edge Middleware
     participant Shell as AppShell (/)
 
-    User->>Page: Enters credentials & clicks Sign In
+    User->>Page: Enters credentials and clicks Sign In
     Page->>Saga: dispatch(signInSubmitted)
     Saga->>Exec: authApiClient.signIn(credentials)
     Exec->>Pipeline: executeHttpRequest(fullUrl, body)
     Pipeline->>CB: Step 7: canExecute(circuitKey)
     CB-->>Pipeline: true (State: CLOSED)
     Pipeline->>Auth: Step 8: POST /api/v1/auth/sign-in
-    Auth-->>Pipeline: HTTP 200 { status: 'success', data: { token, payload, user } }
-    Pipeline->>CB: onSuccess(circuitKey) -> Reset failure counter
+    Auth-->>Pipeline: HTTP 200 (status: success, data)
+    Pipeline->>CB: onSuccess(circuitKey) - Reset failure counter
     Pipeline-->>Exec: res.data
-    Exec->>Exec: Unwraps json.data -> { status, message, token, payload, user }
+    Exec->>Exec: Unwraps json.data into token, payload, user
     Exec-->>Saga: Resolved AuthResponse
-    Saga->>Saga: setAuthCookies(token, role) with max-age=604800 & SameSite=Lax
+    Saga->>Saga: setAuthCookies(token, role)
     Saga->>Page: put(authSuccess)
     Page->>Page: dispatch(resetAuthStatus)
     Page->>Middleware: router.push('/') with Cookie: authjs.session-token
