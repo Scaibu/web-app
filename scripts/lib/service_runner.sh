@@ -38,7 +38,7 @@ cmd_run_service() {
           log_info "Freeing port $port and starting Auth Service & DB in Docker Compose..."
           free_port "$port"
           cd "$dir"
-          docker compose down --remove-orphans >/dev/null 2>&1 || true
+          docker compose down -v --remove-orphans >/dev/null 2>&1 || true
           exec docker compose up --build --force-recreate
         fi
         if ! nc -z localhost 31412 >/dev/null 2>&1; then
