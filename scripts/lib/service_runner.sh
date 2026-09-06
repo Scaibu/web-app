@@ -32,11 +32,13 @@ cmd_run_service() {
       load_env_variant "$dir" "$APP_ENV"
       if [ "$key" = "auth" ]; then
         if [ -f "$dir/docker-compose.yml" ] && command -v docker >/dev/null 2>&1; then
-          log_info "Cleaning up previous auth images..."
+          log_info "Cleaning up previous auth containers and images..."
+          docker rm -f observability-auth-service auth-service-db 2>/dev/null || true
           docker image rm auth-auth-service auth-service observability-auth-service --force >/dev/null 2>&1 || true
-          log_info "Freeing port $port and starting Auth Service & DB in Docker Compose (Hot Reload & Force Recreate Enabled)..."
+          log_info "Freeing port $port and starting Auth Service & DB in Docker Compose..."
           free_port "$port"
           cd "$dir"
+          docker compose down --remove-orphans >/dev/null 2>&1 || true
           exec docker compose up --build --force-recreate
         fi
         if ! nc -z localhost 31412 >/dev/null 2>&1; then
@@ -80,10 +82,12 @@ cmd_dev() {
   fi
 
   if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1 && [ -f "docker-compose.yaml" ]; then
-    log_info "Cleaning up previous web-app image..."
+    log_info "Cleaning up previous web-app containers and images..."
+    docker rm -f web-app $(docker ps -a -q --filter "name=web-app") 2>/dev/null || true
     docker image rm web-app-web-app web-app --force >/dev/null 2>&1 || true
-    log_info "Freeing port 31400 and starting Next.js Web App in Docker Compose (Hot Reload & Force Recreate Enabled)..."
+    log_info "Freeing port 31400 and starting Next.js Web App in Docker Compose..."
     free_port 31400
+    docker compose down --remove-orphans >/dev/null 2>&1 || true
     exec docker compose up --build --force-recreate
   fi
 
