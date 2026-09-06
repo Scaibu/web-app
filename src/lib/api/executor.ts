@@ -93,6 +93,17 @@ export async function executeHttpRequest<T = any>(
       throw err;
     }
 
+    if (json && typeof json === "object" && "data" in json && json.data !== undefined && json.data !== null) {
+      if (typeof json.data === "object" && !Array.isArray(json.data)) {
+        return {
+          status: json.status,
+          message: json.message,
+          ...json.data,
+        } as T;
+      }
+      return json.data as T;
+    }
+
     return json as T;
   } catch (err: any) {
     if (typeof window !== "undefined" && (err?.status === 401 || err?.message?.includes("expired"))) {

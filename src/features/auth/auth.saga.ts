@@ -19,8 +19,8 @@ function getCookieToken(): string | undefined {
 
 function setAuthCookies(token: string, role?: string) {
   if (!compareNormalized(typeof document, "undefined")) {
-    document.cookie = `${AUTH_COOKIE_KEYS.SESSION_TOKEN}=${token}; ${AUTH_COOKIE_KEYS.DEFAULT_PATH}`;
-    document.cookie = `${AUTH_COOKIE_KEYS.USER_ROLE}=${role || AUTH_ROLES.OWNER}; ${AUTH_COOKIE_KEYS.DEFAULT_PATH}`;
+    document.cookie = `${AUTH_COOKIE_KEYS.SESSION_TOKEN}=${token}; ${AUTH_COOKIE_KEYS.DEFAULT_PATH}; max-age=604800; SameSite=Lax`;
+    document.cookie = `${AUTH_COOKIE_KEYS.USER_ROLE}=${role || AUTH_ROLES.OWNER}; ${AUTH_COOKIE_KEYS.DEFAULT_PATH}; max-age=604800; SameSite=Lax`;
   }
 }
 
