@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { TracesDashboardUI } from './TracesDashboardUI';
 
 const meta: Meta<typeof TracesDashboardUI> = {
-  title: 'Features/Traces/TracesDashboardUI',
+  title: 'Features/Traces/TracesDashboard',
   component: TracesDashboardUI,
   tags: ['autodocs'],
   parameters: {
