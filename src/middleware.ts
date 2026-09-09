@@ -9,6 +9,12 @@ import {
   type HttpMiddlewareCtx,
 } from '@observability/shared-infra/http';
 
+const WEB_APP_PUBLIC_ROUTES = [
+  '/auth/sign-in',
+  '/auth/sign-up',
+  '/auth/callback',
+];
+
 function extractSessionToken(req: NextRequest): string | undefined {
   const val =
     req.cookies.get('authjs.session-token')?.value ||
@@ -58,7 +64,7 @@ export function middleware(req: NextRequest): Promise<NextResponse> {
     traceparent: '',
     tracestate: '',
     tenantId: headersRecord['x-tenant-id'] || 'tenant-default',
-    isPublic: isPublicRoute(pathname),
+    isPublic: isPublicRoute(pathname, WEB_APP_PUBLIC_ROUTES),
     sessionToken: extractSessionToken(req),
     customHeaders: {},
   };
