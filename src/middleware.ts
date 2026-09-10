@@ -7,7 +7,7 @@ import {
   withAuthGuard,
   isPublicRoute,
   type HttpMiddlewareCtx,
-} from '@observability/shared-infra/http';
+} from '@chief-strategist-j/shared-infra/http';
 
 const WEB_APP_PUBLIC_ROUTES = [
   '/auth/sign-in',

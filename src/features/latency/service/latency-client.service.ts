@@ -1,8 +1,8 @@
 import {
   createServiceClient,
   executeServiceClientQuery,
-} from "@observability/shared-infra/discovery";
-import { HTTP_CONSTANTS } from "@observability/shared-infra/http";
+} from "@chief-strategist-j/shared-infra/discovery";
+import { HTTP_CONSTANTS } from "@chief-strategist-j/shared-infra/http";
 import type {
   PercentilesResult,
   SLOResult,

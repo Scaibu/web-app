@@ -1,8 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import type { Rule } from '@observability/shared-infra/rules-engine';
-import { resolveFlag } from '@observability/shared-infra/feature-flags';
+import type { Rule } from '@chief-strategist-j/shared-infra/rules-engine';
+import { resolveFlag } from '@chief-strategist-j/shared-infra/feature-flags';
 
 interface FeatureFlagContextValue {
   readonly flags: Record<string, boolean>;

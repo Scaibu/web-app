@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ['redux-saga'],
   experimental: {},
   transpilePackages: [
-    '@observability/shared-infra',
+    '@chief-strategist-j/shared-infra',
     '@observability/design-tokens',
   ],
   eslint: {

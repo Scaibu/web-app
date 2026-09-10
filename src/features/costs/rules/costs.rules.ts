@@ -1,4 +1,4 @@
-import { type Rule, resolveRules } from "@observability/shared-infra/rules-engine";
+import { type Rule, resolveRules } from "@chief-strategist-j/shared-infra/rules-engine";
 
 export const COST_RULES: Rule[] = [
   {

@@ -1,9 +1,9 @@
 import {
   createServiceClient,
   executeServiceClientQuery,
-} from "@observability/shared-infra/discovery";
-import { mapJson } from "@observability/shared-infra/json-map";
-import { HTTP_CONSTANTS } from "@observability/shared-infra/http";
+} from "@chief-strategist-j/shared-infra/discovery";
+import { mapJson } from "@chief-strategist-j/shared-infra/json-map";
+import { HTTP_CONSTANTS } from "@chief-strategist-j/shared-infra/http";
 import type { TraceSummary, TraceDetailResult } from "../types";
 import { TraceSummaryFromApiOps } from "../schema";
 import { TRACES_CONFIG_DEFAULTS, TRACES_ENDPOINTS } from "../constants";

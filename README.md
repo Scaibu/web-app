@@ -84,7 +84,7 @@ The frontend features (`latency`, `quality`, `overview`, `traces`, `costs`) comm
   - **Environment Key**: `JWT_SECRET` (defaults to development secret key).
 
 ### 2. OpenTelemetry & Distributed Context Propagation
-- **Headers**: Every adapter request automatically propagates W3C context headers via `@observability/shared-infra`:
+- **Headers**: Every adapter request automatically propagates W3C context headers via `@chief-strategist-j/shared-infra`:
   - `traceparent`: `00-<trace_id>-<span_id>-01`
   - `x-trace-id`: `<32_hex_trace_id>`
   - `x-request-id`, `x-correlation-id`, `x-tenant-id`
@@ -114,7 +114,7 @@ The frontend features (`latency`, `quality`, `overview`, `traces`, `costs`) comm
 
 1. **Centralized Tracing Initialization (`src/core/tracing/tracer.ts`)**:
    - Client-side: `WebTracerProvider` with `BatchSpanProcessor(OTLPTraceExporter)` pushing OTLP traces directly to OpenTelemetry Collector (`http://localhost:31417/v1/traces`).
-   - Server-side: Dynamically loads `@observability/shared-infra/tracing` Node.js OpenTelemetry provider for React Server Components (RSC) and Server Side Rendering (SSR).
+   - Server-side: Dynamically loads `@chief-strategist-j/shared-infra/tracing` Node.js OpenTelemetry provider for React Server Components (RSC) and Server Side Rendering (SSR).
 
 2. **Next.js W3C Context Propagation (`src/middleware.ts`)**:
    - Next.js middleware extracts or generates W3C `traceparent`, `x-request-id`, `x-correlation-id`, and `tracestate` headers.

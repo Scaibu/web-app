@@ -33,13 +33,13 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@observability/shared-infra": ["../shared-infra/src/index.ts"],
-      "@observability/shared-infra/http": ["../shared-infra/src/http/index.ts"],
-      "@observability/shared-infra/discovery": ["../shared-infra/src/discovery/index.ts"],
-      "@observability/shared-infra/feature-flags": ["../shared-infra/src/feature-flags/resolve-flag.ts"],
-      "@observability/shared-infra/rules-engine": ["../shared-infra/src/rules-engine/index.ts"],
-      "@observability/shared-infra/json-map": ["../shared-infra/src/data-driven/json-map.ts"],
-      "@observability/shared-infra/*": ["../shared-infra/src/*"],
+      "@chief-strategist-j/shared-infra": ["../shared-infra/dist/index.d.ts"],
+      "@chief-strategist-j/shared-infra/http": ["../shared-infra/dist/http/http-client.d.ts"],
+      "@chief-strategist-j/shared-infra/discovery": ["../shared-infra/dist/discovery/index.d.ts"],
+      "@chief-strategist-j/shared-infra/feature-flags": ["../shared-infra/dist/feature-flags/resolve-flag.d.ts"],
+      "@chief-strategist-j/shared-infra/rules-engine": ["../shared-infra/dist/rules-engine/index.d.ts"],
+      "@chief-strategist-j/shared-infra/json-map": ["../shared-infra/dist/json-map/index.d.ts"],
+      "@chief-strategist-j/shared-infra/*": ["../shared-infra/dist/*"],
       "@observability/auth": ["../auth/src/index.ts"],
       "@observability/auth/*": ["../auth/src/*"]
     }

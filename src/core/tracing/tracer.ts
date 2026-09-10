@@ -1,4 +1,4 @@
-import { trace, ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@observability/shared-infra/tracing';
+import { trace, ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@chief-strategist-j/shared-infra/tracing';
 
 let providerInitialized = false;
 
@@ -6,7 +6,7 @@ export function initOpenTelemetryTracer(): void {
   if (providerInitialized) return;
 
   if (typeof window === 'undefined') {
-    import('@observability/shared-infra/tracing').then(({ initNodeTracing }) => {
+    import('@chief-strategist-j/shared-infra/tracing').then(({ initNodeTracing }) => {
       initNodeTracing('web-app', '0.1.0');
     }).catch(() => {});
     providerInitialized = true;

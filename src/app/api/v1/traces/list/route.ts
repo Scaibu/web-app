@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { TraceListQuerySchema, tracesClientService } from "@/features/traces";
-import { withTracedValidation } from "@observability/shared-infra/http";
+import { withTracedValidation } from "@chief-strategist-j/shared-infra/http";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

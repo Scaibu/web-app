@@ -1,4 +1,4 @@
-import { trace } from '@observability/shared-infra/tracing';
+import { trace } from '@chief-strategist-j/shared-infra/tracing';
 
 export interface BaseAdapter {
   [key: string]: any;

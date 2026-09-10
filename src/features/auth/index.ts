@@ -1,4 +1,4 @@
-import { featureRegistry } from "@observability/shared-infra/store";
+import { featureRegistry } from "@chief-strategist-j/shared-infra/store";
 import { authReducer } from "./auth.slice";
 import { authSaga } from "./auth.saga";
 

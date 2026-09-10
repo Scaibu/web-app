@@ -6,7 +6,7 @@
 | **Title** | Session Cookie Persistence, Envelope Unwrapping, Circuit Breaker Cooldown, and Route Guard Redirect Loop Resolution |
 | **Status** | **Accepted** |
 | **Date** | 2026-09-06 |
-| **Scope** | Web App Client & Edge Middleware (`packages/node/web-app`), Shared Infra Resilient Pipeline (`@observability/shared-infra/http`) |
+| **Scope** | Web App Client & Edge Middleware (`packages/node/web-app`), Shared Infra Resilient Pipeline (`@chief-strategist-j/shared-infra/http`) |
 
 ---
 
