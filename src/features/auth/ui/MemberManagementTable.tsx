@@ -28,12 +28,6 @@ const ROLE_DROPDOWN_ITEMS: DropdownItem[] = [
   { id: 'viewer', label: 'Viewer', description: 'Read Only Access', value: 'viewer' },
 ];
 
-function getCookieToken(): string | undefined {
-  if (typeof document === 'undefined') return undefined;
-  const match = document.cookie.match(new RegExp('(?:^|; )authjs\\.session-token=([^;]*)'));
-  return match && match[1] ? decodeURIComponent(match[1]) : undefined;
-}
-
 export function MemberManagementTable({
   members = [],
   onInviteMember,
@@ -92,7 +86,6 @@ export function MemberManagementTable({
       setStatusMsg(`User "${editName}" details updated successfully!`);
       setTimeout(() => {
         setSelectedMember(null);
-        dispatch(authActions.fetchMembersSubmitted());
       }, 800);
     } catch (err: any) {
       setStatusMsg(`Failed to save changes: ${err.message || 'Error occurred'}`);

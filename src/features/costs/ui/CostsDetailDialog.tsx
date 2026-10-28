@@ -12,7 +12,7 @@ import {
 } from '../../../components/primitives/Dialog';
 import { Button } from '../../../components/primitives/Button';
 import { cn } from '../../../lib/utils/cn';
-import type { CostByProvider } from '../types';
+import type { CostByProvider } from '../models/costs.model';
 
 export interface CostsDetailDialogProps {
   row: CostByProvider | null;

@@ -11,6 +11,9 @@ export interface TracesFilterState {
   service?: string;
   status?: string;
   model?: string;
+  selectedService?: string;
+  selectedStatus?: string;
+  selectedModel?: string;
   minDurationMs?: number;
 }
 

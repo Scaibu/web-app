@@ -1,4 +1,4 @@
-import type { CostByProvider, CostTrendPoint, CostCalculatorResult, ImportedSnapshot } from '../types';
+import type { CostByProvider, CostTrendPoint, CostCalculatorResult, ImportedSnapshot } from '../models/costs.model';
 
 export function filterProviders(providers: CostByProvider[], query: string): CostByProvider[] {
   const q = query.trim().toLowerCase();

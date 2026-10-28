@@ -60,6 +60,10 @@ export const TRACES_TEXT = {
   WATERFALL_CLICK_INFO: "Click any span row to inspect OpenTelemetry metadata & payloads",
   WATERFALL_COL_SPAN: "Span Name & Service",
   WATERFALL_COL_ID: "Span ID",
+  WATERFALL_COL_DURATION: "Duration",
+  DRAWER_PROMPT_INPUT: "Prompt Input Payload",
+  DRAWER_COMPLETION_OUTPUT: "Completion Output Payload",
+  DRAWER_COPY_BUTTON: "Copy",
 } as const;
 
 export const OTEL_ATTRIBUTES = {

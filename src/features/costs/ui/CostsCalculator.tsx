@@ -4,7 +4,7 @@ import React from 'react';
 import { Calculator, AlertTriangle, TrendingUp, DollarSign, Zap, Clock } from 'lucide-react';
 import { Skeleton } from '../../../components/ui/Skeleton';
 import { cn } from '../../../lib/utils/cn';
-import type { CostCalculatorResult } from '../types';
+import type { CostCalculatorResult } from '../models/costs.model';
 
 export interface CostsCalculatorProps {
   tokensPerDay: number;

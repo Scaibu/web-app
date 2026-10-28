@@ -28,12 +28,6 @@ export default function ApiKeysPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  function getCookieToken(): string | undefined {
-    if (typeof document === "undefined") return undefined;
-    const match = document.cookie.match(new RegExp("(?:^|; )authjs\\.session-token=([^;]*)"));
-    return match && match[1] ? decodeURIComponent(match[1]) : undefined;
-  }
-
   const loadData = useCallback(async () => {
     setKeys([
       {

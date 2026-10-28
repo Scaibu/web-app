@@ -13,12 +13,6 @@ interface OrgSettingsFormProps {
   readonly onDelete?: () => void;
 }
 
-function getCookieToken(): string | undefined {
-  if (typeof document === 'undefined') return undefined;
-  const match = document.cookie.match(new RegExp('(?:^|; )authjs\\.session-token=([^;]*)'));
-  return match && match[1] ? decodeURIComponent(match[1]) : undefined;
-}
-
 export function OrgSettingsForm({
   orgName = 'Scaibu Corp',
   orgSlug = 'scaibu-corp',

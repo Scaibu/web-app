@@ -4,7 +4,7 @@ import React from 'react';
 import { GitCompare, TrendingUp, TrendingDown, Minus, MousePointerClick } from 'lucide-react';
 import { Skeleton } from '../../../components/ui/Skeleton';
 import { cn } from '../../../lib/utils/cn';
-import type { CostByProvider } from '../types';
+import type { CostByProvider } from '../models/costs.model';
 
 export interface ComparisonDelta {
   costDeltaAbs: number;
