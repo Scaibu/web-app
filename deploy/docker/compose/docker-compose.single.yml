@@ -5,7 +5,6 @@ x-hardening: &hardening
   cap_drop: [ALL]
   security_opt: ["no-new-privileges:true"]
   init: true
-  pids_limit: 256
   restart: unless-stopped
   logging: &logging
     driver: local
