@@ -37,6 +37,7 @@ const NAV_GROUPS: readonly { title: string; items: readonly NavItem[] }[] = [
     title: 'Dashboards',
     items: [
       { label: 'Overview', href: '/', icon: LayoutDashboard },
+      { label: 'Traces', href: '/traces', icon: Activity },
       { label: 'Costs', href: '/costs', icon: DollarSign },
       { label: 'Latency', href: '/latency', icon: Clock },
       { label: 'Quality', href: '/quality', icon: Award },

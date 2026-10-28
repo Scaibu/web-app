@@ -144,7 +144,7 @@ export function MetricCard({
   const cardContent = (
     <div
       className={cn(
-        'flex flex-col justify-between rounded-[var(--radius-xl)] border shadow-sm backdrop-blur-md transition-all hover:scale-[1.01]',
+        'flex flex-col justify-between rounded-[var(--radius-xl)] border shadow-sm transition-colors',
         severity !== undefined ? SEVERITY_BG[severity] : 'border-[hsl(var(--border))] bg-[hsl(var(--card))]',
         dense ? 'p-3' : 'p-6',
         className

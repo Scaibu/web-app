@@ -1,0 +1,38 @@
+include:
+  - path: docker-compose.infra.yml
+
+x-hardening: &hardening
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  init: true
+  pids_limit: 256
+  restart: unless-stopped
+  logging: { driver: local, options: { max-size: "10m", max-file: "5" } }
+
+x-app-common: &app-common
+  <<: *hardening
+  networks: [frontend, backend]
+  tmpfs: [/tmp]
+  stop_grace_period: 30s
+  ulimits: { nofile: { soft: 65535, hard: 65535 } }
+
+services:
+  web-app:
+    <<: *app-common
+    image: ${REGISTRY:?}/web-app@${WEB_APP_DIGEST:?}
+    expose: ["31400"]
+    environment:
+      PORT: 31400
+      NODE_ENV: production
+      NODE_OPTIONS: "--max-old-space-size=384"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:31400/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits: { cpus: "1.0", memory: 512M }
+        reservations: { memory: 256M }

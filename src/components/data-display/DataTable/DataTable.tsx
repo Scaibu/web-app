@@ -10,7 +10,7 @@ import {
   type SortingState,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-react';
+import { ArrowDown, ArrowUp, ChevronsUpDown, X } from 'lucide-react';
 import { cn } from '../../../lib/utils/cn';
 import { formatCostUsdMicro, formatLatencyMs, formatTokens } from '../../../lib/utils/formatters';
 
@@ -93,7 +93,7 @@ function TableToolbar({
               onClick={() => onSearchChange('')}
               className="absolute right-2 text-xs text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]"
             >
-              ✕
+              <X size={12} aria-hidden="true" />
             </button>
           )}
         </div>

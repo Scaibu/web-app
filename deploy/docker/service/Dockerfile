@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
-ARG BASE_IMAGE=node:22.11.0-slim
-ARG BUILDER_IMAGE=node:22.11.0-slim
+ARG BASE_IMAGE=node:22.11.0-slim@sha256:d8c55dc4da28b7e06bc86a5b6d5180f682855fb21e7208cfd2bf16a5e1eb2c64
+ARG BUILDER_IMAGE=node:22.11.0-slim@sha256:d8c55dc4da28b7e06bc86a5b6d5180f682855fb21e7208cfd2bf16a5e1eb2c64
 
 # ---------- Stage 1: Builder ----------
 FROM ${BUILDER_IMAGE} AS builder
@@ -42,4 +42,5 @@ LABEL org.opencontainers.image.source="https://github.com/Scaibu/web-app" \
 
 USER ${UID}:${GID}
 EXPOSE 31400
+STOPSIGNAL SIGTERM
 CMD ["node_modules/.bin/next", "start", "-p", "31400"]

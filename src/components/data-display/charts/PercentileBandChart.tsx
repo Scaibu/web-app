@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import { AlertTriangle } from 'lucide-react';
 import uPlot from 'uplot';
 import 'uplot/dist/uPlot.min.css';
 import { cn } from '../../../lib/utils/cn';
@@ -97,8 +98,9 @@ export function PercentileBandChart({
         className="rounded-[var(--radius-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-4"
       />
       {(hasInvertedBands || hasLowSamples) && (
-        <p className="mt-2 text-xs text-[hsl(var(--severity-warn))]" role="status">
-          ⚠ Some buckets have low sample sizes — percentile bands may appear inverted or noisy.
+        <p className="mt-2 flex items-center gap-1.5 text-xs text-[hsl(var(--severity-warn))]" role="status">
+          <AlertTriangle size={12} aria-hidden="true" />
+          Some buckets have low sample sizes — percentile bands may appear inverted or noisy.
         </p>
       )}
     </div>

@@ -95,7 +95,7 @@ export function SearchableDropdown({
       {isOpen && (
         <div
           className={cn(
-            'absolute top-[calc(100%+6px)] z-[100] min-w-[210px] w-max max-w-xs rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-2xl p-2 animate-in fade-in duration-150 text-xs backdrop-blur-md',
+            'absolute top-[calc(100%+6px)] z-50 min-w-[210px] w-max max-w-xs rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-2xl p-2 animate-in fade-in duration-150 text-xs',
             align === 'right' ? 'right-0' : 'left-0'
           )}
         >

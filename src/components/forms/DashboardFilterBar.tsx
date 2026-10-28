@@ -47,7 +47,7 @@ export function DashboardFilterBar({
   environmentOptions = DEFAULT_ENVIRONMENTS,
 }: DashboardFilterBarProps) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card)/0.6)] backdrop-blur-md shadow-sm">
+    <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-sm">
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[hsl(var(--muted-foreground))] pr-2 border-r border-[hsl(var(--border))]">
           <Filter className="w-3.5 h-3.5" />

@@ -1,0 +1,84 @@
+name: ${COMPOSE_PROJECT_NAME:-web-app}
+
+x-hardening: &hardening
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  init: true
+  pids_limit: 256
+  restart: unless-stopped
+  logging: &logging
+    driver: local
+    options: { max-size: "10m", max-file: "5" }
+
+services:
+  db:
+    image: postgres:16.4-bookworm@sha256:d8c55dc4da28b7e06bc86a5b6d5180f682855fb21e7208cfd2bf16a5e1eb2c64
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    cap_add: [CHOWN, SETUID, SETGID, FOWNER, DAC_OVERRIDE]
+    networks: [backend]
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets: [db_password]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    shm_size: 256m
+    stop_grace_period: 60s
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits: { cpus: "2.0", memory: 1G }
+    logging: *logging
+
+  cache:
+    <<: *hardening
+    image: redis:7.4-bookworm@sha256:bb142a9c18ac18a16713c1491d779697b4e9b06b5b40b2e6e4c2ef2c91606e60
+    command: ["redis-server", "--maxmemory", "200mb", "--maxmemory-policy", "allkeys-lru", "--save", ""]
+    networks: [backend]
+    tmpfs: [/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    deploy:
+      resources:
+        limits: { memory: 256M }
+
+  proxy:
+    <<: *hardening
+    image: caddy:2.8-alpine@sha256:4e5fcc7e2773822e5341e tried34a3e7b82e2ba1f2ae2e5e
+    ports: ["80:80", "443:443"]
+    networks: [frontend]
+    volumes:
+      - ${PROXY_CONFIG:?set PROXY_CONFIG to Caddyfile path}:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    tmpfs: [/config, /tmp]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "--spider", "http://127.0.0.1:2019/config/"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+networks:
+  frontend: {}
+  backend:
+    internal: true
+  egress: {}
+
+volumes:
+  pgdata:
+    name: ${COMPOSE_PROJECT_NAME:-web-app}_pgdata
+  caddy_data: {}
+
+secrets:
+  db_password:
+    file: ${SECRETS_DIR:?set SECRETS_DIR}/db_password.txt

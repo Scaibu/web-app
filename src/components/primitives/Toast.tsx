@@ -39,7 +39,7 @@ export const Toast = React.forwardRef<
     <ToastPrimitive.Root
       ref={ref}
       className={cn(
-        'group flex w-full gap-3 rounded-[var(--radius-lg)] border p-4 shadow-lg backdrop-blur-md transition-all',
+        'group flex w-full gap-3 rounded-[var(--radius-lg)] border p-4 shadow-lg transition-all',
         'data-[state=open]:animate-slide-in data-[state=closed]:animate-hide',
         variantClasses[variant],
         className

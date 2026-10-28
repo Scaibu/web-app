@@ -106,14 +106,14 @@ export function GlobalSearch() {
                     <button
                       key={item.href + item.title}
                       onClick={() => handleSelect(item.href)}
-                      className="w-full flex items-center justify-between px-3 py-2.5 rounded-[var(--radius-md)] text-xs text-left hover:bg-gradient-to-r hover:from-purple-900/30 hover:to-indigo-900/20 text-[hsl(var(--foreground))] transition-all group cursor-pointer"
+                      className="w-full flex items-center justify-between px-3 py-2.5 rounded-[var(--radius-md)] text-xs text-left hover:bg-[hsl(var(--accent)/0.5)] text-[hsl(var(--foreground))] transition-colors group cursor-pointer"
                     >
                       <div className="flex items-center gap-3">
                         <div className="p-1.5 rounded-md bg-[hsl(var(--primary)/0.1)] text-[hsl(var(--primary))] group-hover:bg-[hsl(var(--primary)/0.2)]">
                           <Icon size={16} />
                         </div>
                         <div>
-                          <div className="font-bold">{item.title}</div>
+                          <div className="font-medium">{item.title}</div>
                           <div className="text-[10px] text-[hsl(var(--muted-foreground))]">{item.category}</div>
                         </div>
                       </div>

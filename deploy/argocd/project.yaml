@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: web-app
+  namespace: argocd
+spec:
+  description: LLM Observability web-app frontend
+  sourceRepos:
+    - "https://github.com/Scaibu/web-app"
+  destinations:
+    - namespace: web-app
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist: []
+  namespaceResourceWhitelist:
+    - group: ""
+      kind: "*"
+    - group: apps
+      kind: "*"
+    - group: networking.k8s.io
+      kind: "*"
