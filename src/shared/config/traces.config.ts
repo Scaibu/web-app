@@ -1,0 +1,84 @@
+export const TRACES_CONFIG_DEFAULTS = {
+  DEFAULT_PAGE_SIZE: 20,
+  DEFAULT_SERVICE_SUB: "web-app-traces-service",
+  DEFAULT_JWT_SECRET: "development-jwt-secret-key-32-bytes-min!!",
+  DEFAULT_JWT_EXPIRY_SECONDS: 3600,
+  DEFAULT_ENGINE_URL: "http://localhost:8000",
+  ERROR_FETCH_TRACES: "Failed to fetch distributed traces",
+  ERROR_FETCH_DETAIL: "Failed to fetch trace detail",
+} as const;
+
+export const TRACES_ENDPOINTS = {
+  LIST: "/api/v1/traces/list",
+  DETAIL: "/api/v1/traces",
+} as const;
+
+export const TRACES_EVENTS = {
+  FETCHED: "traces.fetched",
+  FAILED: "traces.failed",
+  DETAIL_FETCHED: "trace_detail.fetched",
+  DETAIL_FAILED: "trace_detail.failed",
+} as const;
+
+export const TRACES_TEXT = {
+  HEADER_TITLE: "Distributed Spans & Execution Traces",
+  HEADER_SUBTITLE: "Search and inspect distributed execution spans, OpenTelemetry trace trees, and latency bottlenecks.",
+  SEARCH_PLACEHOLDER: "Search trace ID, operation...",
+  KPI_TOTAL_TRACES: "Total Traces",
+  KPI_TOTAL_TRACES_DESC: "Recorded execution streams",
+  KPI_AVG_LATENCY: "Avg Latency",
+  KPI_AVG_LATENCY_DESC: "Average trace duration",
+  KPI_ERROR_RATE: "Error Rate",
+  KPI_ERROR_RATE_DESC: "Trace failures ratio",
+  KPI_TOTAL_TOKENS: "Total Tokens",
+  KPI_TOTAL_TOKENS_DESC: "total spend",
+
+  FILTER_ALL_SERVICES: "All Services",
+  FILTER_ALL_STATUSES: "All Statuses",
+  FILTER_ALL_MODELS: "All Models",
+  FILTER_STATUS_SUCCESS: "Success",
+  FILTER_STATUS_ERROR: "Error",
+  FILTER_MIN_DURATION_PREFIX: "Min:",
+  FILTER_MIN_DURATION_PLACEHOLDER: "0 ms",
+  FILTER_RESET_BUTTON: "Reset All Filters",
+
+  TABLE_TRACE_ID: "Trace ID",
+  TABLE_ROOT_OPERATION: "Root Operation",
+  TABLE_SERVICE: "Service",
+  TABLE_MODEL: "Model",
+  TABLE_DURATION: "Duration",
+  TABLE_TOKENS: "Tokens",
+  TABLE_EST_COST: "Est. Cost",
+  TABLE_STATUS: "Status",
+  TABLE_ACTION_FLAME: "Flame Graph",
+  NO_TRACES_MATCH: "No distributed traces recorded matching your filter parameters.",
+
+  WATERFALL_BACK_LINK: "Back to Traces Explorer",
+  WATERFALL_TRACE_ID_LABEL: "Trace ID:",
+  WATERFALL_TOTAL_DURATION: "Total Duration:",
+  WATERFALL_TOTAL_SPANS: "Total Spans:",
+  WATERFALL_CLICK_INFO: "Click any span row to inspect OpenTelemetry metadata & payloads",
+  WATERFALL_COL_SPAN: "Span Name & Service",
+  WATERFALL_COL_ID: "Span ID",
+} as const;
+
+export const OTEL_ATTRIBUTES = {
+  SERVICE_NAME: "service.name",
+  ENDPOINT: "endpoint",
+  LLM_MODEL: "llm.model",
+  LLM_PROVIDER: "llm.provider",
+  PROMPT_TOKENS: "llm.usage.prompt_tokens",
+  COMPLETION_TOKENS: "llm.usage.completion_tokens",
+  LATENCY_TTFT_MS: "llm.latency_ms_ttft",
+  LATENCY_TOTAL_MS: "llm.latency_ms_total",
+  COST_USD_MICRO: "llm.cost_usd_micro",
+  FINISH_REASON: "llm.finish_reason",
+  PII_DETECTED: "llm.pii_detected",
+  INJECTION_ATTEMPT: "llm.injection_attempt",
+  SPAN_WARNINGS: "llm.span_warnings",
+  PROMPT_TEXT: "llm.prompt",
+  COMPLETION_TEXT: "llm.completion",
+  ENVIRONMENT: "llm.environment",
+  USER_ID: "user.id",
+  SESSION_ID: "session.id",
+} as const;
