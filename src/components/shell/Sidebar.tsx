@@ -75,7 +75,7 @@ export function Sidebar() {
     <aside className="flex h-screen w-64 flex-col border-r border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] shadow-lg">
       <div className="border-b border-[hsl(var(--border))] p-3 space-y-2">
         <div className="flex items-center gap-2 px-2 py-1">
-          <div className="p-1 rounded-md bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-sm">
+          <div className="p-1.5 rounded-md bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] shadow-sm">
             <Activity size={18} />
           </div>
           <span className="font-bold tracking-tight text-sm text-[hsl(var(--foreground))]">
@@ -92,7 +92,7 @@ export function Sidebar() {
 
         {NAV_GROUPS.map((group) => (
           <div key={group.title} className="mb-6">
-            <h2 className="px-2 mb-2 text-[10px] font-bold uppercase tracking-wider text-[hsl(var(--muted-foreground))]">
+            <h2 className="px-2 mb-2 text-xs font-semibold uppercase tracking-wider text-[hsl(var(--muted-foreground))]">
               {group.title}
             </h2>
             <div className="flex flex-col gap-1">
@@ -106,7 +106,7 @@ export function Sidebar() {
                     className={cn(
                       'flex items-center gap-2.5 rounded-[var(--radius-md)] px-3 py-2 text-xs font-semibold transition-all',
                       isActive
-                        ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 text-white shadow-md shadow-purple-500/20'
+                        ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] shadow-sm'
                         : 'text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted)/.5)] hover:text-[hsl(var(--foreground))]'
                     )}
                   >

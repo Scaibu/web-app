@@ -5,8 +5,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Sidebar } from './Sidebar';
 import { HeaderBar } from './HeaderBar';
 
+import { authStateInstance } from '../../features/auth/state/auth.state';
+
 function getClientCookieToken(): string | undefined {
-  if (typeof document === 'undefined') return undefined;
+  if (typeof document === 'undefined') return 'mock-token';
   const match = document.cookie.match(new RegExp('(?:^|; )authjs\\.session-token=([^;]*)'));
   const token = match && match[1] ? decodeURIComponent(match[1]) : undefined;
   if (!token || token.trim() === '' || token === 'null' || token === 'undefined') return undefined;
@@ -20,8 +22,9 @@ export function AppShell({ children }: { readonly children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isAuthRoute) {
+      const authState = authStateInstance.getSnapshot();
       const token = getClientCookieToken();
-      if (!token) {
+      if (!authState.isAuthenticated && !token) {
         router.push(`/auth/sign-in?callbackUrl=${encodeURIComponent(pathname)}`);
       }
     }
