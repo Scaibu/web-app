@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "fuser -k ${PORT:-31400}/tcp 2>/dev/null || true",
     "dev": "next dev -p ${PORT:-31400}",
     "build": "next build",
+    "prestart": "fuser -k ${PORT:-31400}/tcp 2>/dev/null || true",
     "start": "next start -p ${PORT:-31400}",
     "typecheck": "tsc --noEmit",
     "lint": "eslint",
