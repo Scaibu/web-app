@@ -37,7 +37,12 @@ export function SpanAttributeDrawer({
 
   return (
     <div className="span-drawer-overlay animate-in fade-in duration-200">
-      <div className="flex-1" onClick={onClose} />
+      <button
+        type="button"
+        className="flex-1 w-full h-full cursor-default bg-transparent border-0"
+        onClick={onClose}
+        aria-label="Close span details"
+      />
 
       <div className="span-drawer-card animate-in slide-in-from-right duration-300">
         <div className="p-5 border-b border-[hsl(var(--border))] flex items-center justify-between bg-[hsl(var(--muted)/0.3)]">

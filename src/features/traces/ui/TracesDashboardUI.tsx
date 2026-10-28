@@ -36,7 +36,7 @@ const defaultFilters: TracesFilterState = {
 };
 
 export function TracesDashboardUI({
-  traces,
+  traces = [],
   filters = defaultFilters,
   loading = false,
   error = null,

@@ -125,8 +125,8 @@ export function TraceDetailWaterfallUI({
             <div
               className={`absolute top-0.5 bottom-0.5 rounded shadow-sm transition-all ${
                 span.status === 'error'
-                  ? 'bg-gradient-to-r from-rose-600 to-red-500'
-                  : 'bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500'
+                  ? 'bg-[hsl(var(--destructive))]'
+                  : 'bg-[hsl(var(--primary))]'
               }`}
               style={{ left: `${leftPct}%`, width: `${widthPct}%` }}
               title={`${spanName}: ${durationMs} ms (${leftPct.toFixed(1)}% start offset)`}
