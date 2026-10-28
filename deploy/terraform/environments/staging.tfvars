@@ -1,0 +1,9 @@
+project_id      = "llm-obs-web-app-9664"
+region          = "asia-south1"
+environment     = "staging"
+container_image = "gcr.io/llm-obs-web-app-9664/web-app:staging"
+service_port    = 31400
+min_instances   = 0
+max_instances   = 5
+cpu_limit       = "1000m"
+memory_limit    = "1024Mi"

@@ -1,9 +1,6 @@
 terraform {
-  backend "s3" {
-    bucket         = "scaibu-terraform-state"
-    key            = "web-app/terraform.tfstate"
-    region         = "ap-south-1"
-    encrypt        = true
-    dynamodb_table = "terraform-locks"
+  backend "gcs" {
+    bucket = "llm-obs-web-app-9664-tfstate"
+    prefix = "web-app/state"
   }
 }

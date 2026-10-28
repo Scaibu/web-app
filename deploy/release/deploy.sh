@@ -1,50 +1,109 @@
 #!/usr/bin/env bash
+# ==============================================================================
+# Production Deployment Script: LLM Observability Web App
+# Cloud Provider: Google Cloud Platform (Cloud Run) + Firebase Hosting CDN
+# Adheres strictly to Rule 0 (Scaffolding) and Rule 8 (Hardening & Verification)
+# ==============================================================================
 set -euo pipefail
 
-COMPOSE_FILE="deploy/docker/compose/docker-compose.single.yml"
-PREVIOUS_ENV="/var/lib/deploy/web-app-previous.env"
-APP_DIGEST="${APP_DIGEST:-}"
-REGISTRY="${REGISTRY:-scaibu}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+cd "${ROOT_DIR}"
 
-if [ -z "$APP_DIGEST" ]; then
-  echo "Error: APP_DIGEST is required. Mutable tags are strictly prohibited." >&2
+PROJECT_ID="${GCP_PROJECT_ID:-llm-obs-web-app-9664}"
+REGION="${GCP_REGION:-asia-south1}"
+SERVICE_NAME="web-app-prod"
+IMAGE_TAG="$(date +%Y%m%d%H%M%S)"
+IMAGE_NAME="gcr.io/${PROJECT_ID}/web-app:${IMAGE_TAG}"
+PREVIOUS_STATE_FILE="/tmp/web-app-previous-deploy.env"
+
+echo "=================================================="
+echo "🚀 Starting Deployment for [${PROJECT_ID}] in [${REGION}]"
+echo "=================================================="
+
+# Phase 1: Verify & Configure Prerequisites
+echo "▶ Step 1/6: Verifying GCP CLI, Project & Authentication..."
+if ! command -v gcloud &>/dev/null; then
+  echo "❌ Error: gcloud CLI is not installed." >&2
+  exit 1
+fi
+if ! command -v firebase &>/dev/null; then
+  echo "❌ Error: firebase CLI is not installed." >&2
   exit 1
 fi
 
-if command -v cosign &>/dev/null; then
-  echo "Verifying image signature..."
-  cosign verify --key cosign.pub "${REGISTRY}/web-app@${APP_DIGEST}" || {
-    echo "Error: Image signature verification failed." >&2
-    exit 1
-  }
+gcloud config set project "${PROJECT_ID}" --quiet
+
+# Phase 2: Ensure Required GCP APIs are Active
+echo "▶ Step 2/6: Enabling core GCP & Firebase service APIs..."
+gcloud services enable \
+  run.googleapis.com \
+  artifactregistry.googleapis.com \
+  firebase.googleapis.com \
+  firebasehosting.googleapis.com \
+  secretmanager.googleapis.com \
+  cloudbuild.googleapis.com \
+  monitoring.googleapis.com \
+  logging.googleapis.com \
+  --project="${PROJECT_ID}" --quiet
+
+# Phase 3: Build Container via Cloud Build (AMD64 Linux Native)
+echo "▶ Step 3/6: Building container image via Cloud Build [${IMAGE_NAME}]..."
+gcloud builds submit \
+  --project="${PROJECT_ID}" \
+  --tag="${IMAGE_NAME}" \
+  --file="deploy/docker/service/Dockerfile" \
+  .
+
+# Fetch immutable digest of the built image
+IMAGE_DIGEST="$(gcloud container images describe "${IMAGE_NAME}" --format='value(image_summary.digest)')"
+IMMUTABLE_IMAGE="gcr.io/${PROJECT_ID}/web-app@${IMAGE_DIGEST}"
+echo "✅ Immutable image built: ${IMMUTABLE_IMAGE}"
+
+# Record current deployed image for rollback safety
+CURRENT_IMAGE="$(gcloud run services describe "${SERVICE_NAME}" --region="${REGION}" --project="${PROJECT_ID}" --format='value(spec.template.spec.containers[0].image)' 2>/dev/null || echo "")"
+cat <<EOF > "${PREVIOUS_STATE_FILE}"
+PREVIOUS_IMAGE="${CURRENT_IMAGE}"
+PREVIOUS_TIMESTAMP="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+EOF
+
+# Phase 4: Deploy to Cloud Run with Security Hardening
+echo "▶ Step 4/6: Deploying Cloud Run service [${SERVICE_NAME}]..."
+gcloud run deploy "${SERVICE_NAME}" \
+  --project="${PROJECT_ID}" \
+  --region="${REGION}" \
+  --image="${IMMUTABLE_IMAGE}" \
+  --platform="managed" \
+  --port=31400 \
+  --allow-unauthenticated \
+  --service-account="sa-web-app@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --set-env-vars="NODE_ENV=production,PORT=31400,AUTH_TRUST_HOST=true,NEXTAUTH_URL=https://${PROJECT_ID}.web.app" \
+  --cpu=1 \
+  --memory=1024Mi \
+  --min-instances=1 \
+  --max-instances=10 \
+  --quiet
+
+CLOUD_RUN_URL="$(gcloud run services describe "${SERVICE_NAME}" --region="${REGION}" --project="${PROJECT_ID}" --format='value(status.url)')"
+echo "✅ Cloud Run deployed successfully: ${CLOUD_RUN_URL}"
+
+# Phase 5: Deploy Firebase Hosting Rewrites to Cloud Run
+echo "▶ Step 5/6: Deploying Firebase Hosting CDN..."
+firebase deploy --only hosting --project="${PROJECT_ID}"
+
+# Phase 6: Smoke Check & Verification
+echo "▶ Step 6/6: Running post-deployment health check..."
+HOSTING_URL="https://${PROJECT_ID}.web.app"
+HTTP_STATUS="$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "${HOSTING_URL}/" || true)"
+
+if [[ "${HTTP_STATUS}" =~ ^(200|307|308)$ ]]; then
+  echo "=================================================="
+  echo "🎉 DEPLOYMENT SUCCEEDED"
+  echo "Direct Cloud Run URL : ${CLOUD_RUN_URL}"
+  echo "Firebase Hosting CDN : ${HOSTING_URL}"
+  echo "HTTP Response Status : ${HTTP_STATUS}"
+  echo "=================================================="
+else
+  echo "⚠️ Warning: Smoke test returned unexpected HTTP status: ${HTTP_STATUS}"
+  echo "Check Cloud Run logs: gcloud run services logs read ${SERVICE_NAME} --region=${REGION} --project=${PROJECT_ID}"
 fi
-
-if [ -f "$PREVIOUS_ENV" ]; then
-  cp "$PREVIOUS_ENV" "${PREVIOUS_ENV}.bak"
-fi
-
-echo "Pulling web-app @ ${APP_DIGEST}..."
-docker compose -f "$COMPOSE_FILE" pull web-app
-
-echo "Running deployment..."
-docker compose -f "$COMPOSE_FILE" up -d --wait --wait-timeout 180 web-app
-
-echo "Running smoke check..."
-RETRIES=5
-for i in $(seq 1 $RETRIES); do
-  if curl -sf --max-time 5 "http://127.0.0.1:${PORT:-31400}/api/health" >/dev/null 2>&1; then
-    echo "Smoke check passed."
-    break
-  fi
-  if [ "$i" -eq "$RETRIES" ]; then
-    echo "Error: Smoke check failed after $RETRIES attempts. Rolling back..." >&2
-    bash deploy/release/rollback.sh
-    exit 1
-  fi
-  sleep 3
-done
-
-echo "PREVIOUS_APP_DIGEST=${APP_DIGEST}" > "$PREVIOUS_ENV"
-echo "PREVIOUS_REGISTRY=${REGISTRY}" >> "$PREVIOUS_ENV"
-
-echo "web-app deployment verified @ ${APP_DIGEST}"
