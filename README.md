@@ -2,7 +2,7 @@
 
 The frontend web application for the LLM Observability Platform, built with Next.js 15, React 19, TypeScript, Redux Toolkit/Saga, and OpenTelemetry Distributed Tracing.
 
-**Live Deployment (Firebase CDN + Cloud Run)**: [https://llm-obs-web-app-9664.web.app](https://llm-obs-web-app-9664.web.app)
+> ⚠️ **Frontend Demo Preview**: [https://llm-obs-web-app-9664.web.app](https://llm-obs-web-app-9664.web.app) is an interactive frontend demonstration running on Firebase CDN + Cloud Run with synthetic client state. Full end-to-end trace ingestion, scoring, and persistent observability require deploying the 13-service backend infrastructure stack (ClickHouse, AlloyDB/PostgreSQL, Redis, Kafka, and Temporal).
 
 ---
 
