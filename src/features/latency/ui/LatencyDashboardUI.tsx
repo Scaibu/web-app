@@ -17,7 +17,7 @@ export function LatencyDashboardUI({
   percentiles,
   slo,
   attribution,
-  baseline,
+  baseline = [],
   loading = false,
   error = null,
 }: LatencyDashboardUIProps) {

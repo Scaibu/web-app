@@ -15,7 +15,7 @@ export interface OverviewDashboardUIProps {
 export function OverviewDashboardUI({
   kpi,
   health,
-  recentTraces,
+  recentTraces = [],
   loading = false,
   error = null,
 }: OverviewDashboardUIProps) {

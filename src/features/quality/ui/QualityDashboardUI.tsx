@@ -20,9 +20,9 @@ export interface QualityDashboardUIProps {
 
 export function QualityDashboardUI({
   summary,
-  trend,
-  models,
-  flaggedAlerts,
+  trend = [],
+  models = [],
+  flaggedAlerts = [],
   loading = false,
   error = null,
 }: QualityDashboardUIProps) {
