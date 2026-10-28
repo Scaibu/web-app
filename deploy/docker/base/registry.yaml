@@ -1,0 +1,15 @@
+version: 1
+mirror: docker.io/library
+bases:
+  node:
+    upstream: node:22.11.0-slim
+    digest: sha256:d8c55dc4da28b7e06bc86a5b6d5180f682855fb21e7208cfd2bf16a5e1eb2c64
+    output: scaibu/base-node
+    healthcheck_style: exec-node
+policy:
+  max_base_age_days: 30
+  scan:
+    tool: trivy
+    fail_on: [HIGH, CRITICAL]
+    ignore_unfixed: true
+  sign: cosign

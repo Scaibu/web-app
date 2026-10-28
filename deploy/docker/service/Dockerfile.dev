@@ -1,0 +1,13 @@
+# syntax=docker/dockerfile:1.7
+# DEV ONLY: Never pushed to production registries
+ARG BUILDER_IMAGE=node:22.11.0-slim@sha256:d8c55dc4da28b7e06bc86a5b6d5180f682855fb21e7208cfd2bf16a5e1eb2c64
+FROM ${BUILDER_IMAGE} AS dev
+ARG SERVICE_PATH=.
+ENV NODE_ENV=development PORT=31400
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+RUN --mount=type=cache,target=/root/.npm npm install
+
+EXPOSE 31400
+CMD ["npm", "run", "dev"]

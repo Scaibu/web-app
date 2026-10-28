@@ -1,0 +1,6 @@
+services:
+  web-app:
+    hostname: web-app
+    port: 31400
+    protocol: http
+    ingress: true

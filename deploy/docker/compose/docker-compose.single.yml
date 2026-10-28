@@ -1,0 +1,48 @@
+name: ${COMPOSE_PROJECT_NAME:-web-app}
+
+x-hardening: &hardening
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  init: true
+  pids_limit: 256
+  restart: unless-stopped
+  logging: &logging
+    driver: local
+    options: { max-size: "10m", max-file: "5" }
+
+services:
+  web-app:
+    <<: *hardening
+    image: ${REGISTRY:-scaibu}/web-app:${APP_TAG:-latest}
+    networks: [frontend]
+    ports:
+      - "${PORT:-31400}:31400"
+    tmpfs: [/tmp]
+    stop_grace_period: 30s
+    environment:
+      PORT: 31400
+      NODE_ENV: production
+    deploy:
+      resources:
+        limits: { cpus: "1.0", memory: 512M }
+        reservations: { memory: 256M }
+
+  web-app-dev:
+    profiles: [dev]
+    build:
+      context: ../../..
+      dockerfile: deploy/docker/service/Dockerfile.dev
+    networks: [frontend]
+    ports:
+      - "127.0.0.1:${PORT:-31400}:31400"
+    environment:
+      PORT: 31400
+      NODE_ENV: development
+    develop:
+      watch:
+        - { action: sync, path: ../../../src, target: /app/src }
+        - { action: sync+restart, path: ../../../package.json, target: /app/package.json }
+
+networks:
+  frontend: {}
