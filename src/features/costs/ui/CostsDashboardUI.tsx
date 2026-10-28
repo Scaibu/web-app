@@ -5,7 +5,7 @@ import { DollarSign, TrendingUp, Calendar, PieChart, Cpu, Upload, X, BarChart2 }
 import { cn } from '../../../lib/utils/cn';
 import { Skeleton } from '../../../components/ui/Skeleton';
 import { Button } from '../../../components/primitives/Button';
-import type { CostSummaryResult, CostByProvider, CostTrendPoint, CostCalculatorResult, ImportedSnapshot } from '../types';
+import type { CostSummaryResult, CostByProvider, CostTrendPoint, CostCalculatorResult, ImportedSnapshot } from '../models/costs.model';
 import { CostsSearchBar } from './CostsSearchBar';
 import { CostsDetailDialog } from './CostsDetailDialog';
 import { CostsTrendChart, type CostsTrendChartMode } from './CostsTrendChart';

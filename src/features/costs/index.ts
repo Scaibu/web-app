@@ -1,17 +1,6 @@
-import { featureRegistry } from "@chief-strategist-j/shared-infra/store";
-import { costsReducer } from "./costs.slice";
-import { costsSaga } from "./costs.saga";
-
-featureRegistry.register("costs", { reducer: costsReducer, saga: costsSaga });
-
-export * from "./types";
-export * from "./schema";
-export * from "./queries";
-export * from "./rules";
-export * from "./service";
-export * from "./constants";
-export * from "./costs.slice";
-export * from "./costs.saga";
-export * from "./hooks";
-export * from "./ui";
-
+export * from "./models/costs.model";
+export * from "./adapter/costs.adapter";
+export * from "./state/costs.state";
+export * from "./controller/costs.controller";
+export * from "./ui/CostsDashboardUI";
+export * from "./ui/costs.view";

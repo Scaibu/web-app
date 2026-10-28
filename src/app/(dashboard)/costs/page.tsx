@@ -1,14 +1,12 @@
 'use client';
 
 import React, { Suspense } from 'react';
-import { useDashboardFilters } from '../../../hooks/useDashboardFilters';
+import { useDashboardFilters } from '../../../shared/ui/useDashboardFilters';
 import { DashboardFilterBar } from '../../../components/forms/DashboardFilterBar';
-import { useCostsDashboardData } from '@/features/costs/hooks';
-import { CostsDashboardUI } from '@/features/costs/ui/CostsDashboardUI';
+import { CostsView } from '@/features/costs';
 
 function CostsDashboardContent() {
   const { filters, setFilter, resetFilters, hasActiveFilters } = useDashboardFilters();
-  const { summary, providers, loading, error } = useCostsDashboardData(filters);
 
   return (
     <div className="flex flex-col gap-6">
@@ -19,12 +17,7 @@ function CostsDashboardContent() {
         hasActiveFilters={hasActiveFilters}
       />
 
-      <CostsDashboardUI
-        summary={summary}
-        providers={providers}
-        loading={loading}
-        error={error}
-      />
+      <CostsView filters={filters} />
     </div>
   );
 }
