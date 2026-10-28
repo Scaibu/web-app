@@ -18,68 +18,68 @@ import { computeDetailMetrics } from './costs-ui.utils';
 
 export interface CostsDashboardUIProps {
   summary: CostSummaryResult | null;
-  providers: CostByProvider[];
-  filteredProviders: CostByProvider[];
+  providers?: CostByProvider[];
+  filteredProviders?: CostByProvider[];
   trendData?: CostTrendPoint[];
   loading?: boolean;
   error?: string | null;
 
-  searchQuery: string;
-  onSearchChange: (q: string) => void;
+  searchQuery?: string;
+  onSearchChange?: (q: string) => void;
 
-  selectedRow: CostByProvider | null;
-  detailOpen: boolean;
-  onRowClick: (row: CostByProvider) => void;
-  onDetailOpenChange: (open: boolean) => void;
+  selectedRow?: CostByProvider | null;
+  detailOpen?: boolean;
+  onRowClick?: (row: CostByProvider) => void;
+  onDetailOpenChange?: (open: boolean) => void;
 
-  trendChartTimestamps: number[];
-  trendChartCosts: number[];
-  trendChartTokens: number[];
-  trendMode: CostsTrendChartMode;
-  onTrendModeChange: (mode: CostsTrendChartMode) => void;
+  trendChartTimestamps?: number[];
+  trendChartCosts?: number[];
+  trendChartTokens?: number[];
+  trendMode?: CostsTrendChartMode;
+  onTrendModeChange?: (mode: CostsTrendChartMode) => void;
 
-  donutSlices: DonutSlice[];
+  donutSlices?: DonutSlice[];
 
-  calculatorTokensPerDay: number;
-  calculatorCostPer1k: number;
-  calculatorBudgetUsd: number;
-  calculatorSelectedModel: string;
-  calculatorResult: CostCalculatorResult;
-  calculatorModelOptions: string[];
-  onCalculatorTokensChange: (v: number) => void;
-  onCalculatorCostPer1kChange: (v: number) => void;
-  onCalculatorBudgetChange: (v: number) => void;
-  onCalculatorModelChange: (m: string) => void;
+  calculatorTokensPerDay?: number;
+  calculatorCostPer1k?: number;
+  calculatorBudgetUsd?: number;
+  calculatorSelectedModel?: string;
+  calculatorResult?: CostCalculatorResult;
+  calculatorModelOptions?: string[];
+  onCalculatorTokensChange?: (v: number) => void;
+  onCalculatorCostPer1kChange?: (v: number) => void;
+  onCalculatorBudgetChange?: (v: number) => void;
+  onCalculatorModelChange?: (m: string) => void;
 
-  comparisonModelA: string;
-  comparisonModelB: string;
-  comparisonRowA: CostByProvider | null;
-  comparisonRowB: CostByProvider | null;
-  comparisonDelta: ComparisonDelta | null;
-  onComparisonModelAChange: (m: string) => void;
-  onComparisonModelBChange: (m: string) => void;
+  comparisonModelA?: string;
+  comparisonModelB?: string;
+  comparisonRowA?: CostByProvider | null;
+  comparisonRowB?: CostByProvider | null;
+  comparisonDelta?: ComparisonDelta | null;
+  onComparisonModelAChange?: (m: string) => void;
+  onComparisonModelBChange?: (m: string) => void;
 
-  periodRange: PeriodRange;
-  periodIndices: number[];
-  periodCurrentValues: number[];
-  periodPreviousValues: number[];
-  periodCurrentSummary: PeriodSummary;
-  periodPreviousSummary: PeriodSummary;
-  periodDeltaPct: number;
-  onPeriodRangeChange: (r: PeriodRange) => void;
+  periodRange?: PeriodRange;
+  periodIndices?: number[];
+  periodCurrentValues?: number[];
+  periodPreviousValues?: number[];
+  periodCurrentSummary?: PeriodSummary;
+  periodPreviousSummary?: PeriodSummary;
+  periodDeltaPct?: number;
+  onPeriodRangeChange?: (r: PeriodRange) => void;
 
-  importDialogOpen: boolean;
-  importPastedJson: string;
-  importParseError: string | null;
-  importParseSuccess: boolean;
-  importedSnapshot: ImportedSnapshot | null;
-  onImportDialogOpen: () => void;
-  onImportDialogOpenChange: (open: boolean) => void;
-  onImportPastedJsonChange: (v: string) => void;
-  onImportFileSelected: (file: File) => void;
-  onImportConfirm: () => void;
-  onImportClear: () => void;
-  onImportedSnapshotDismiss: () => void;
+  importDialogOpen?: boolean;
+  importPastedJson?: string;
+  importParseError?: string | null;
+  importParseSuccess?: boolean;
+  importedSnapshot?: ImportedSnapshot | null;
+  onImportDialogOpen?: () => void;
+  onImportDialogOpenChange?: (open: boolean) => void;
+  onImportPastedJsonChange?: (v: string) => void;
+  onImportFileSelected?: (file: File) => void;
+  onImportConfirm?: () => void;
+  onImportClear?: () => void;
+  onImportedSnapshotDismiss?: () => void;
 }
 
 function KpiCard({ label, value, sub, icon }: { label: string; value: string; sub: string; icon: React.ReactNode }) {
@@ -95,23 +95,70 @@ function KpiCard({ label, value, sub, icon }: { label: string; value: string; su
   );
 }
 
+const NOOP = () => {};
+
 export function CostsDashboardUI(props: CostsDashboardUIProps) {
   const {
-    summary, providers, filteredProviders, loading = false, error = null,
-    searchQuery, onSearchChange,
-    selectedRow, detailOpen, onRowClick, onDetailOpenChange,
-    trendChartTimestamps, trendChartCosts, trendChartTokens, trendMode, onTrendModeChange,
-    donutSlices,
-    calculatorTokensPerDay, calculatorCostPer1k, calculatorBudgetUsd, calculatorSelectedModel,
-    calculatorResult, calculatorModelOptions, onCalculatorTokensChange, onCalculatorCostPer1kChange,
-    onCalculatorBudgetChange, onCalculatorModelChange,
-    comparisonModelA, comparisonModelB, comparisonRowA, comparisonRowB, comparisonDelta,
-    onComparisonModelAChange, onComparisonModelBChange,
-    periodRange, periodIndices, periodCurrentValues, periodPreviousValues,
-    periodCurrentSummary, periodPreviousSummary, periodDeltaPct, onPeriodRangeChange,
-    importDialogOpen, importPastedJson, importParseError, importParseSuccess, importedSnapshot,
-    onImportDialogOpen, onImportDialogOpenChange, onImportPastedJsonChange,
-    onImportFileSelected, onImportConfirm, onImportClear, onImportedSnapshotDismiss,
+    summary,
+    providers = [],
+    filteredProviders = props.providers || [],
+    loading = false,
+    error = null,
+    searchQuery = '',
+    onSearchChange = NOOP,
+    selectedRow = null,
+    detailOpen = false,
+    onRowClick = NOOP,
+    onDetailOpenChange = NOOP,
+    trendChartTimestamps = [],
+    trendChartCosts = [],
+    trendChartTokens = [],
+    trendMode = 'cost',
+    onTrendModeChange = NOOP,
+    donutSlices = [],
+    calculatorTokensPerDay = 100000,
+    calculatorCostPer1k = 0.005,
+    calculatorBudgetUsd = 1000,
+    calculatorSelectedModel = '',
+    calculatorResult = {
+      daily_cost_usd: 0.5,
+      monthly_cost_usd: 15,
+      cost_per_1k: 0.005,
+      days_until_budget_hit: null,
+      over_budget: false,
+    },
+    calculatorModelOptions = [],
+    onCalculatorTokensChange = NOOP,
+    onCalculatorCostPer1kChange = NOOP,
+    onCalculatorBudgetChange = NOOP,
+    onCalculatorModelChange = NOOP,
+    comparisonModelA = '',
+    comparisonModelB = '',
+    comparisonRowA = null,
+    comparisonRowB = null,
+    comparisonDelta = null,
+    onComparisonModelAChange = NOOP,
+    onComparisonModelBChange = NOOP,
+    periodRange = '30d',
+    periodIndices = [],
+    periodCurrentValues = [],
+    periodPreviousValues = [],
+    periodCurrentSummary = { total_cost_usd: 0, daily_avg_usd: 0 },
+    periodPreviousSummary = { total_cost_usd: 0, daily_avg_usd: 0 },
+    periodDeltaPct = 0,
+    onPeriodRangeChange = NOOP,
+    importDialogOpen = false,
+    importPastedJson = '',
+    importParseError = null,
+    importParseSuccess = false,
+    importedSnapshot = null,
+    onImportDialogOpen = NOOP,
+    onImportDialogOpenChange = NOOP,
+    onImportPastedJsonChange = NOOP,
+    onImportFileSelected = NOOP,
+    onImportConfirm = NOOP,
+    onImportClear = NOOP,
+    onImportedSnapshotDismiss = NOOP,
   } = props;
 
   const detailMetrics = selectedRow ? computeDetailMetrics(selectedRow) : null;
