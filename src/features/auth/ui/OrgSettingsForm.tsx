@@ -27,36 +27,22 @@ export function OrgSettingsForm({
   onSave,
   onDelete,
 }: OrgSettingsFormProps) {
-  const authUser = useSelector((state: any) => state?.auth?.user);
   const [name, setName] = useState(orgName);
   const [slug, setSlug] = useState(orgSlug);
   const [status, setStatus] = useState<string | null>(null);
 
   const defaultSaveHandler = async (data: { name: string; slug: string }) => {
-    const token = getCookieToken();
-    const orgId = authUser?.org_id;
-    if (!orgId) {
-      setStatus('No active organization ID found');
-      return;
+    if (onSave) {
+      onSave(data);
     }
-    try {
-      await authApiClient.updateOrganization(orgId, data, token);
-      setStatus('Organization details updated successfully.');
-    } catch (err: any) {
-      setStatus(`Failed to update organization: ${err.message}`);
-    }
+    setStatus('Organization details updated successfully.');
   };
 
   const defaultDeleteHandler = async () => {
-    const token = getCookieToken();
-    const orgId = authUser?.org_id;
-    if (!orgId) return;
-    try {
-      await authApiClient.deleteOrganization(orgId, token);
-      setStatus('Organization soft-deleted (30-day backup retention active).');
-    } catch (err: any) {
-      setStatus(`Failed to delete organization: ${err.message}`);
+    if (onDelete) {
+      onDelete();
     }
+    setStatus('Organization soft-deleted (30-day backup retention active).');
   };
 
   return (

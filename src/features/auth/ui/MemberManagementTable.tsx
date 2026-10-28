@@ -41,7 +41,6 @@ export function MemberManagementTable({
   onDeleteMember,
   onUpdateRole,
 }: MemberManagementTableProps) {
-  const dispatch = useDispatch();
   const [showInviteForm, setShowInviteForm] = useState(false);
   const [newEmail, setNewEmail] = useState('');
   const [newName, setNewName] = useState('');
@@ -56,37 +55,20 @@ export function MemberManagementTable({
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
 
   const defaultInviteHandler = (data: { email: string; name: string; role: string }) => {
-    dispatch(authActions.inviteUserSubmitted(data));
+    if (onInviteMember) onInviteMember(data);
+    setShowInviteForm(false);
   };
 
   const defaultBlockHandler = async (userId: string) => {
-    const token = getCookieToken();
-    try {
-      await authApiClient.blockUser(userId, token);
-      dispatch(authActions.fetchMembersSubmitted());
-    } catch (err) {
-      console.error('Failed to block user:', err);
-    }
+    if (onBlockMember) onBlockMember(userId);
   };
 
   const defaultDeleteHandler = async (userId: string) => {
-    const token = getCookieToken();
-    try {
-      await authApiClient.deleteUser(userId, token);
-      dispatch(authActions.fetchMembersSubmitted());
-    } catch (err) {
-      console.error('Failed to delete user:', err);
-    }
+    if (onDeleteMember) onDeleteMember(userId);
   };
 
   const defaultRoleUpdateHandler = async (userId: string, role: string) => {
-    const token = getCookieToken();
-    try {
-      await authApiClient.updateUserRole(userId, role, token);
-      dispatch(authActions.fetchMembersSubmitted());
-    } catch (err) {
-      console.error('Failed to update user role:', err);
-    }
+    if (onUpdateRole) onUpdateRole(userId, role);
   };
 
   const handleOpenEditModal = (member: Member) => {
