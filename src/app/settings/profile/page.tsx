@@ -1,26 +1,25 @@
 'use client';
 
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { User, Mail, Shield, Building2, CheckCircle2 } from 'lucide-react';
 import { ThemeSwitcher } from '../../../components/ui/ThemeSwitcher';
 import { TiltCard } from '../../../components/ui/TiltCard';
+import { authStateInstance } from '../../../features/auth';
 
 export default function UserProfilePage() {
-  const authUser = useSelector((state: any) => state?.auth?.user);
-  const userOrganizations = useSelector((state: any) => state?.auth?.userOrganizations || []);
+  const authUser = authStateInstance.getSnapshot().user;
 
   const name = authUser?.name || 'Jaydeep Scaibu';
   const email = authUser?.email || 'jaydeep@scaibu.com';
   const role = authUser?.role || 'owner';
-  const orgName = authUser?.org_name || userOrganizations[0]?.name || 'Scaibu Enterprise';
-  const orgId = authUser?.org_id || userOrganizations[0]?.id || 'org_default';
+  const orgName = 'Scaibu Enterprise';
+  const orgId = authUser?.orgId || 'org_default';
 
   return (
     <div className="space-y-6 w-full text-left max-w-7xl mx-auto">
       {/* Header Banner */}
       <div className="flex items-center gap-4 pb-4 border-b border-[hsl(var(--border))]">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 text-white font-bold text-lg shadow-lg">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[hsl(var(--primary))] text-white font-bold text-lg shadow-sm">
           {name.charAt(0).toUpperCase()}
         </div>
         <div>
@@ -37,8 +36,8 @@ export default function UserProfilePage() {
         {/* User Identity 3D Tilt Card */}
         <TiltCard className="p-6 space-y-4 text-left">
           <h3 className="text-sm font-bold text-[hsl(var(--foreground))] uppercase tracking-wider flex items-center gap-2 border-b border-[hsl(var(--border))] pb-3">
-            <User size={16} className="text-purple-400" />
-            Account Overview & Entitlements
+            <User size={16} className="text-[hsl(var(--primary))]" />
+            Account Overview &amp; Entitlements
           </h3>
 
           <div className="space-y-3 text-xs">
@@ -60,7 +59,7 @@ export default function UserProfilePage() {
               <span className="text-[hsl(var(--muted-foreground))] flex items-center gap-1.5">
                 <Shield size={14} /> Assigned RBAC Role
               </span>
-              <span className="font-bold uppercase text-[10px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-sm">
+              <span className="font-bold uppercase text-xs px-2.5 py-0.5 rounded-full bg-[hsl(var(--primary)/.15)] text-[hsl(var(--primary))] border border-[hsl(var(--primary)/.3)]">
                 {role}
               </span>
             </div>

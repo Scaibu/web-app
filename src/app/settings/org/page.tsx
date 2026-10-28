@@ -1,13 +1,12 @@
 'use client';
 
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { OrgSettingsForm } from '../../../features/auth';
+import { OrgSettingsForm, authStateInstance } from '../../../features/auth';
 import { Building2 } from 'lucide-react';
 import { ThemeSwitcher } from '../../../components/ui/ThemeSwitcher';
 
 export default function OrgSettingsPage() {
-  const authUser = useSelector((state: any) => state?.auth?.user);
+  const authUser = authStateInstance.getSnapshot().user;
 
   return (
     <div className="space-y-6 w-full text-left max-w-7xl mx-auto">

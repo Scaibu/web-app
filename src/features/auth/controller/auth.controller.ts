@@ -13,6 +13,9 @@ export class AuthController {
     try {
       const user = await this.adapter.signIn(credentials);
       this.state.setUser(user);
+      if (typeof document !== "undefined") {
+        document.cookie = "authjs.session-token=demo-token-active; path=/; max-age=86400";
+      }
       return true;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to sign in";
@@ -26,6 +29,9 @@ export class AuthController {
     try {
       const user = await this.adapter.signUp(data);
       this.state.setUser(user);
+      if (typeof document !== "undefined") {
+        document.cookie = "authjs.session-token=demo-token-active; path=/; max-age=86400";
+      }
       return true;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to sign up";
@@ -47,6 +53,9 @@ export class AuthController {
 
   signOut(): void {
     this.state.setUser(null);
+    if (typeof document !== "undefined") {
+      document.cookie = "authjs.session-token=; path=/; max-age=0";
+    }
   }
 }
 

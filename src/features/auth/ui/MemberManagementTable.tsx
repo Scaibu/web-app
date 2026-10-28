@@ -123,22 +123,22 @@ export function MemberManagementTable({
     switch (role) {
       case 'owner':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-extrabold uppercase text-[10px] bg-gradient-to-r from-amber-500 to-purple-600 text-white shadow-sm">
-            <Crown size={10} />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-bold uppercase text-xs bg-[hsl(var(--severity-warn)/.15)] text-[hsl(var(--severity-warn))] border border-[hsl(var(--severity-warn)/.3)] shadow-sm">
+            <Crown size={12} />
             Owner
           </span>
         );
       case 'admin':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-bold uppercase text-[10px] bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-sm">
-            <Shield size={10} />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-bold uppercase text-xs bg-[hsl(var(--primary)/.15)] text-[hsl(var(--primary))] border border-[hsl(var(--primary)/.3)] shadow-sm">
+            <Shield size={12} />
             Admin
           </span>
         );
       case 'member':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-bold uppercase text-[10px] dark:bg-emerald-950/80 bg-emerald-100/90 dark:text-emerald-300 text-emerald-900 border border-emerald-500/50 shadow-sm">
-            <Sparkles size={10} />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold uppercase text-xs bg-[hsl(var(--muted)/.8)] text-[hsl(var(--foreground))] border border-[hsl(var(--border))] shadow-sm">
+            <Sparkles size={12} />
             Member
           </span>
         );
@@ -235,12 +235,12 @@ export function MemberManagementTable({
           <div className="w-full max-w-lg rounded-2xl bg-[hsl(var(--card))] border border-[hsl(var(--border))] shadow-2xl overflow-hidden text-left p-6 space-y-5">
             <div className="flex items-center justify-between border-b border-[hsl(var(--border))] pb-3">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-sm shadow">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[hsl(var(--primary))] text-white font-bold text-sm shadow-sm">
                   {selectedMember.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[hsl(var(--foreground))]">User Profile & Permissions</h3>
-                  <p className="text-[11px] font-mono text-[hsl(var(--muted-foreground))]">ID: {selectedMember.id}</p>
+                  <h3 className="text-base font-bold text-[hsl(var(--foreground))]">User Profile &amp; Permissions</h3>
+                  <p className="text-xs font-mono text-[hsl(var(--muted-foreground))]">ID: {selectedMember.id}</p>
                 </div>
               </div>
               <button
