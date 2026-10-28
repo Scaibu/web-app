@@ -1,14 +1,12 @@
 'use client';
 
 import React, { Suspense } from 'react';
-import { useDashboardFilters } from '../../hooks/useDashboardFilters';
+import { useDashboardFilters } from '../../shared/ui/useDashboardFilters';
 import { DashboardFilterBar } from '../../components/forms/DashboardFilterBar';
-import { useOverviewDashboardData } from '@/features/overview/hooks';
-import { OverviewDashboardUI } from '@/features/overview/ui/OverviewDashboardUI';
+import { OverviewView } from '@/features/overview';
 
 function OverviewDashboardContent() {
   const { filters, setFilter, resetFilters, hasActiveFilters } = useDashboardFilters();
-  const { kpi, health, recentTraces, loading, error } = useOverviewDashboardData(filters);
 
   return (
     <div className="flex flex-col gap-6">
@@ -19,13 +17,7 @@ function OverviewDashboardContent() {
         hasActiveFilters={hasActiveFilters}
       />
 
-      <OverviewDashboardUI
-        kpi={kpi}
-        health={health}
-        recentTraces={recentTraces}
-        loading={loading}
-        error={error}
-      />
+      <OverviewView filters={filters} />
     </div>
   );
 }

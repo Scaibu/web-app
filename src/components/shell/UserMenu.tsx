@@ -2,8 +2,6 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useSelector, useDispatch } from 'react-redux';
-import { authActions } from '../../features/auth/auth.slice';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../primitives/DropdownMenu';
 import { User, Settings, Key, LogOut, ShieldAlert } from 'lucide-react';
 
@@ -16,14 +14,10 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ user: propUser, impersonating = false }: UserMenuProps) {
-  const authUser = useSelector((state: any) => state?.auth?.user);
-  const name = propUser?.name ?? authUser?.name ?? (authUser?.email ? authUser.email.split('@')[0] : 'Workspace Member');
-  const email = propUser?.email ?? authUser?.email ?? 'signed-in@workspace';
-
-  const dispatch = useDispatch();
+  const name = propUser?.name ?? 'Jaydeep';
+  const email = propUser?.email ?? 'jaydeep@gmail.com';
 
   function handleSignOut() {
-    dispatch(authActions.signOutSubmitted());
     if (typeof window !== 'undefined') {
       window.location.href = '/auth/sign-in';
     }

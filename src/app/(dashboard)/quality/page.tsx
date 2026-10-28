@@ -1,14 +1,12 @@
 'use client';
 
 import React, { Suspense } from 'react';
-import { useDashboardFilters } from '../../../hooks/useDashboardFilters';
+import { useDashboardFilters } from '../../../shared/ui/useDashboardFilters';
 import { DashboardFilterBar } from '../../../components/forms/DashboardFilterBar';
-import { useQualityDashboardData } from '@/features/quality/hooks';
-import { QualityDashboardUI } from '@/features/quality/ui/QualityDashboardUI';
+import { QualityView } from '@/features/quality';
 
 function QualityDashboardContent() {
   const { filters, setFilter, resetFilters, hasActiveFilters } = useDashboardFilters();
-  const { summary, trend, models, flaggedAlerts, loading, error } = useQualityDashboardData(filters);
 
   return (
     <div className="flex flex-col gap-6">
@@ -19,14 +17,7 @@ function QualityDashboardContent() {
         hasActiveFilters={hasActiveFilters}
       />
 
-      <QualityDashboardUI
-        summary={summary}
-        trend={trend}
-        models={models}
-        flaggedAlerts={flaggedAlerts}
-        loading={loading}
-        error={error}
-      />
+      <QualityView filters={filters} />
     </div>
   );
 }

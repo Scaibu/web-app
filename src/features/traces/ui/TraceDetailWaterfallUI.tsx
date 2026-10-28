@@ -3,9 +3,9 @@
 import React, { useState } from 'react';
 import { Layers, Clock, Cpu, ArrowLeft, ChevronRight, ChevronDown, Info } from 'lucide-react';
 import Link from 'next/link';
-import type { TraceDetailResult, SpanNode } from '../types';
+import type { TraceDetailResult, SpanNode } from '../models/traces.model';
 import { SpanAttributeDrawer } from './SpanAttributeDrawer';
-import { TRACES_TEXT } from '../constants';
+import { TRACES_TEXT } from '../../../shared/config/traces.config';
 
 export interface TraceDetailWaterfallUIProps {
   trace: TraceDetailResult | null;

@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { X, Copy, Check, Clock, Tag, Code, Terminal, Layers } from 'lucide-react';
-import type { SpanNode } from '../types';
-import { TRACES_TEXT, OTEL_ATTRIBUTES } from '../constants';
+import type { SpanNode } from '../models/traces.model';
+import { TRACES_TEXT, OTEL_ATTRIBUTES } from '../../../shared/config/traces.config';
 import { renderAttribute } from './attribute-renderers';
 
 export interface SpanAttributeDrawerProps {

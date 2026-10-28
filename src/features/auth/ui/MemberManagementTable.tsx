@@ -1,10 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { UserPlus, Shield, UserX, Ban, CheckCircle2, Crown, Sparkles, Edit, X, Save, User, Mail } from 'lucide-react';
-import { authActions } from '../auth.slice';
-import { authApiClient } from '../../../lib/api/auth-client';
 import { Button } from '../../../components/primitives/Button';
 import { SearchableDropdown, type DropdownItem } from '../../../components/ui/SearchableDropdown';
 

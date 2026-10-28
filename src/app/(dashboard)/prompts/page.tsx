@@ -1,7 +1,7 @@
 'use client';
 
 import React, { Suspense } from 'react';
-import { useDashboardFilters } from '../../../hooks/useDashboardFilters';
+import { useDashboardFilters } from '../../../shared/ui/useDashboardFilters';
 import { DashboardFilterBar } from '../../../components/forms/DashboardFilterBar';
 import { EmptyState } from '../../../components/states/EmptyState';
 

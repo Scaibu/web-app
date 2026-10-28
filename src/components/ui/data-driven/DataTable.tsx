@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { transformList } from "../../../core/data-driven/list-transform";
-import type { ListOp } from "../../../core/data-driven/transform.types";
 import { Input } from "../../primitives/Input";
 import { SkeletonTable } from "../Skeleton";
 
@@ -25,7 +23,7 @@ export function DataTable<T extends Record<string, any>>({
   rows: T[];
   searchFields?: string[];
   title?: string;
-  extraOps?: ListOp[];
+  extraOps?: any[];
   actions?: (row: T) => React.ReactNode;
   loading?: boolean;
 }) {
@@ -34,15 +32,24 @@ export function DataTable<T extends Record<string, any>>({
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
   const visibleRows = useMemo(() => {
-    const ops: ListOp[] = [...extraOps];
+    let result = [...rows];
     if (query && searchFields.length > 0) {
-      ops.push({ op: "search", fields: searchFields, query });
+      const q = query.toLowerCase();
+      result = result.filter((row) =>
+        searchFields.some((f) => String(row[f] ?? "").toLowerCase().includes(q))
+      );
     }
     if (sortField) {
-      ops.push({ op: "sort", field: sortField, dir: sortDir });
+      result.sort((a, b) => {
+        const valA = a[sortField];
+        const valB = b[sortField];
+        if (valA < valB) return sortDir === "asc" ? -1 : 1;
+        if (valA > valB) return sortDir === "asc" ? 1 : -1;
+        return 0;
+      });
     }
-    return transformList(rows, ops);
-  }, [rows, query, searchFields, sortField, sortDir, extraOps]);
+    return result;
+  }, [rows, query, searchFields, sortField, sortDir]);
 
   const handleSort = (fieldKey: string) => {
     if (sortField === fieldKey) {

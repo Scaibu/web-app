@@ -7,7 +7,7 @@ import type {
   QualityTrendPoint,
   ModelQualityBreakdown,
   FlaggedContentAlert,
-} from '../types';
+} from '../models/quality.model';
 
 export interface QualityDashboardUIProps {
   summary: QualitySummaryResult | null;

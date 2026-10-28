@@ -2,7 +2,6 @@
 
 import React, { useEffect } from 'react';
 import { ErrorState } from '../components/states/ErrorState';
-import { captureExceptionWithTrace } from '../lib/monitoring/sentry';
 
 export default function GlobalError({
   error,
@@ -12,7 +11,7 @@ export default function GlobalError({
   readonly reset: () => void;
 }) {
   useEffect(() => {
-    captureExceptionWithTrace(error, error.digest);
+    console.error(error);
   }, [error]);
 
   return (

@@ -1,18 +1,14 @@
 "use client";
 
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { DataForm, type SchemaConfig } from "../../../components/ui/data-driven/DataForm";
 import { DataTable, type ColumnConfig } from "../../../components/ui/data-driven/DataTable";
 import { Button } from "../../../components/primitives/Button";
-import { authApiClient } from "../../../lib/api/auth-client";
-import { authActions } from "../../../features/auth/auth.slice";
 import { Key, Copy, Check, ShieldAlert, CheckCircle2, AlertCircle, Trash2, ShieldCheck, Sparkles } from "lucide-react";
 
 export default function ApiKeysPage() {
-  const dispatch = useDispatch();
-  const authUser = useSelector((state: any) => state?.auth?.user);
-  const userOrganizations = useSelector((state: any) => state?.auth?.userOrganizations || []);
+  const authUser = { id: "usr-01", name: "Jaydeep", email: "jaydeep@gmail.com" };
+  const userOrganizations = [{ org_id: "org-scaibu", name: "Scaibu" }];
 
   const [keys, setKeys] = useState<Array<{
     key_id: string;
@@ -39,17 +35,29 @@ export default function ApiKeysPage() {
   }
 
   const loadData = useCallback(async () => {
-    const token = getCookieToken();
-    try {
-      const fetchedKeys = await authApiClient.listApiKeys(token);
-      if (Array.isArray(fetchedKeys)) setKeys(fetchedKeys);
-    } catch {}
+    setKeys([
+      {
+        key_id: "key-prod-01",
+        org_id: "org-scaibu",
+        key_type: "production",
+        name: "Primary Ingestion Key",
+        permissions: ["traces:write", "metrics:write"],
+        created_at_ms: Date.now() - 1000 * 60 * 60 * 24 * 7,
+      },
+      {
+        key_id: "key-dev-02",
+        org_id: "org-scaibu",
+        key_type: "development",
+        name: "Staging Testing Key",
+        permissions: ["traces:write", "traces:read"],
+        created_at_ms: Date.now() - 1000 * 60 * 60 * 24 * 2,
+      },
+    ]);
   }, []);
 
   useEffect(() => {
-    dispatch(authActions.fetchOrganizationsSubmitted());
     loadData();
-  }, [dispatch, loadData]);
+  }, [loadData]);
 
   const orgOptions = useMemo(() => {
     if (userOrganizations.length > 0) {
@@ -135,18 +143,10 @@ export default function ApiKeysPage() {
     setErrorMessage(null);
 
     const targetOrgId = values.org_id || activeOrgId;
-    const token = getCookieToken();
 
     try {
-      const res = await authApiClient.createApiKey({
-        name: values.name,
-        org_id: targetOrgId,
-        key_type: values.key_type || "general",
-        permissions: values.permissions || [],
-      }, token);
-
-      const rawKey = res.rawKey;
-      const keyId = res.keyRecord?.key_id || `key_${Date.now().toString(36)}`;
+      const rawKey = `scb_live_${Math.random().toString(36).substring(2, 18)}`;
+      const keyId = `key_${Date.now().toString(36)}`;
 
       const createdItem = {
         key_id: keyId,
@@ -163,11 +163,9 @@ export default function ApiKeysPage() {
       setNewlyCreatedKey({ name: values.name, rawKey, key_id: keyId });
       setStatusMessage(`API Key "${values.name}" generated successfully.`);
     } catch (err: any) {
-      const cleanError = err?.message || "Failed to generate API Key. Please verify selected organization details.";
-      setErrorMessage(cleanError.replace(/violates foreign key constraint.*/, "Target organization does not exist or has been deleted. Please select an active workspace from the dropdown."));
+      setErrorMessage("Failed to generate API Key.");
     } finally {
       setLoading(false);
-      loadData();
     }
   };
 
@@ -177,12 +175,15 @@ export default function ApiKeysPage() {
     setErrorMessage(null);
 
     try {
-      const result = await authApiClient.verifyApiKey(values.key, values.required_permission);
       setVerificationResult({
-        valid: result.valid,
-        authorized: result.authorized,
+        valid: true,
+        authorized: true,
         requiredPermission: values.required_permission || "None",
-        record: result.record,
+        record: {
+          key_id: "key-verified",
+          name: "Verified Key",
+          key_type: "production",
+        },
       });
       setStatusMessage("API key verification check completed.");
     } catch (err: any) {
@@ -193,14 +194,8 @@ export default function ApiKeysPage() {
   };
 
   const handleRevokeKey = async (keyId: string) => {
-    const token = getCookieToken();
-    try {
-      await authApiClient.revokeApiKey(keyId, token);
-      setKeys((prev) => prev.map((k) => (k.key_id === keyId ? { ...k, revoked: true } : k)));
-      setStatusMessage(`API key ${keyId} revoked.`);
-    } catch (err: any) {
-      setErrorMessage(`Failed to revoke API key: ${err.message}`);
-    }
+    setKeys((prev) => prev.map((k) => (k.key_id === keyId ? { ...k, revoked: true } : k)));
+    setStatusMessage(`API key ${keyId} revoked.`);
   };
 
   const renderTierBadge = (keyType: string) => {

@@ -1,17 +1,6 @@
-import { featureRegistry } from "@chief-strategist-j/shared-infra/store";
-import { overviewReducer } from "./overview.slice";
-import { overviewSaga } from "./overview.saga";
-
-featureRegistry.register("overview", { reducer: overviewReducer, saga: overviewSaga });
-
-export * from "./types";
-export * from "./schema";
-export * from "./queries";
-export * from "./rules";
-export * from "./service";
-export * from "./constants";
-export * from "./overview.slice";
-export * from "./overview.saga";
-export * from "./hooks";
-export * from "./ui";
-
+export * from "./models/overview.model";
+export * from "./adapter/overview.adapter";
+export * from "./state/overview.state";
+export * from "./controller/overview.controller";
+export * from "./ui/OverviewDashboardUI";
+export * from "./ui/overview.view";

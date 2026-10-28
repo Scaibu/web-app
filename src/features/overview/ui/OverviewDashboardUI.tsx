@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Activity, Clock, Award, DollarSign, ShieldCheck, AlertTriangle, ArrowUpRight, ArrowDownRight, Layers } from 'lucide-react';
-import type { OverviewKPIAggregates, SystemHealthSLOBanner, RecentTracePreview } from '../types';
+import type { OverviewKPIAggregates, SystemHealthSLOBanner, RecentTracePreview } from '../models/overview.model';
 
 export interface OverviewDashboardUIProps {
   kpi: OverviewKPIAggregates | null;

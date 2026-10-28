@@ -3,9 +3,16 @@
 import React, { useMemo } from 'react';
 import Link from 'next/link';
 import { Layers, Search, ExternalLink, Filter, Clock, Cpu, AlertTriangle } from 'lucide-react';
-import type { TraceSummary } from '../types';
-import type { TracesFilterState } from '../traces.slice';
-import { TRACES_TEXT } from '../constants';
+import type { TraceSummary } from '../models/traces.model';
+import { TRACES_TEXT } from '../../../shared/config/traces.config';
+
+export interface TracesFilterState {
+  searchQuery?: string;
+  service?: string;
+  status?: string;
+  model?: string;
+  minDurationMs?: number;
+}
 
 export interface TracesDashboardUIProps {
   traces: TraceSummary[];

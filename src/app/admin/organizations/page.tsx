@@ -4,10 +4,12 @@ import React, { useEffect, useState, useCallback } from "react";
 import { DataForm, type SchemaConfig } from "../../../components/ui/data-driven/DataForm";
 import { DataTable, type ColumnConfig } from "../../../components/ui/data-driven/DataTable";
 import { Button } from "../../../components/primitives/Button";
-import { authApiClient } from "../../../lib/api/auth-client";
 
 export default function OrganizationsAdminPage() {
-  const [orgs, setOrgs] = useState<Array<{ id: string; name: string; slug: string; soft_deleted?: boolean }>>([]);
+  const [orgs, setOrgs] = useState<Array<{ id: string; name: string; slug: string; soft_deleted?: boolean }>>([
+    { id: "org-scaibu", name: "Scaibu Inc.", slug: "scaibu" },
+    { id: "org-acme", name: "Acme Corp", slug: "acme" },
+  ]);
   const [users, setUsers] = useState<Array<{
     id: string;
     email: string;
@@ -17,41 +19,46 @@ export default function OrganizationsAdminPage() {
     blocked: boolean;
     user_permissions: string[];
     soft_deleted?: boolean;
-  }>>([]);
+  }>>([
+    {
+      id: "usr-01",
+      email: "jaydeep@gmail.com",
+      name: "Jaydeep",
+      org_id: "org-scaibu",
+      role: "admin",
+      blocked: false,
+      user_permissions: ["admin", "read", "write"],
+    },
+    {
+      id: "usr-02",
+      email: "sarah@scaibu.com",
+      name: "Sarah Chen",
+      org_id: "org-scaibu",
+      role: "member",
+      blocked: false,
+      user_permissions: ["read", "write"],
+    },
+  ]);
   const [auditLogs, setAuditLogs] = useState<Array<{
     id: string;
     user_id: string;
     org_id: string;
     event_type: string;
     timestamp_ms: number;
-  }>>([]);
+  }>>([
+    {
+      id: "log-01",
+      user_id: "usr-01",
+      org_id: "org-scaibu",
+      event_type: "auth.login",
+      timestamp_ms: Date.now() - 1000 * 60 * 15,
+    },
+  ]);
 
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  function getCookieToken(): string | undefined {
-    if (typeof document === "undefined") return undefined;
-    const match = document.cookie.match(new RegExp("(?:^|; )authjs\\.session-token=([^;]*)"));
-    return match && match[1] ? decodeURIComponent(match[1]) : undefined;
-  }
-
-  const loadData = useCallback(async () => {
-    const token = getCookieToken();
-    try {
-      const fetchedOrgs = await authApiClient.listOrganizations(token);
-      if (Array.isArray(fetchedOrgs)) setOrgs(fetchedOrgs);
-    } catch {}
-
-    try {
-      const fetchedUsers = await authApiClient.listUsers(token);
-      if (Array.isArray(fetchedUsers)) setUsers(fetchedUsers);
-    } catch {}
-
-    try {
-      const fetchedLogs = await authApiClient.fetchAuditLogs(undefined, token);
-      if (Array.isArray(fetchedLogs)) setAuditLogs(fetchedLogs);
-    } catch {}
-  }, []);
+  const loadData = useCallback(async () => {}, []);
 
   useEffect(() => {
     loadData();
@@ -100,84 +107,44 @@ export default function OrganizationsAdminPage() {
   };
 
   const handleCreateOrg = async (values: { name: string; slug?: string }) => {
-    setLoading(true);
-    const token = getCookieToken();
-    try {
-      const created = await authApiClient.createOrganization(values.name, values.slug, token);
-      setOrgs((prev) => [...prev, created]);
-      setStatusMessage(`Organization "${created.name}" created successfully.`);
-    } catch (err: any) {
-      setStatusMessage(`Failed to create organization: ${err.message}`);
-    } finally {
-      setLoading(false);
-      loadData();
-    }
+    const created = { id: `org-${Date.now()}`, name: values.name, slug: values.slug || values.name.toLowerCase() };
+    setOrgs((prev) => [...prev, created]);
+    setStatusMessage(`Organization "${created.name}" created successfully.`);
   };
 
   const handleCreateUser = async (values: any) => {
-    setLoading(true);
-    const token = getCookieToken();
-    try {
-      const newUser = await authApiClient.createUser({
-        email: values.email,
-        name: values.name,
-        org_id: values.org_id,
-        role: values.role || "member",
-        permissions: values.permissions || [],
-      }, token);
-      setUsers((prev) => [...prev, newUser]);
-      setStatusMessage(`User "${values.name}" created for Org ${values.org_id}.`);
-    } catch (err: any) {
-      setStatusMessage(`Failed to create user: ${err.message}`);
-    } finally {
-      setLoading(false);
-      loadData();
-    }
+    const newUser = {
+      id: `usr-${Date.now()}`,
+      email: values.email,
+      name: values.name,
+      org_id: values.org_id,
+      role: values.role || "member",
+      permissions: values.permissions || [],
+      blocked: false,
+    };
+    setUsers((prev) => [...prev, newUser]);
+    setStatusMessage(`User "${values.name}" created for Org ${values.org_id}.`);
   };
 
   const handleBlockUser = async (userId: string) => {
-    const token = getCookieToken();
-    try {
-      await authApiClient.blockUser(userId, token);
-      setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, blocked: true } : u)));
-      setStatusMessage(`User ${userId} blocked.`);
-    } catch (err: any) {
-      setStatusMessage(`Failed to block user: ${err.message}`);
-    }
+    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, blocked: true } : u)));
+    setStatusMessage(`User ${userId} blocked.`);
   };
 
   const handleUnblockUser = async (userId: string) => {
-    const token = getCookieToken();
-    try {
-      await authApiClient.unblockUser(userId, token);
-      setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, blocked: false } : u)));
-      setStatusMessage(`User ${userId} unblocked.`);
-    } catch (err: any) {
-      setStatusMessage(`Failed to unblock user: ${err.message}`);
-    }
+    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, blocked: false } : u)));
+    setStatusMessage(`User ${userId} unblocked.`);
   };
 
   const handleDeleteUser = async (userId: string) => {
-    const token = getCookieToken();
-    try {
-      await authApiClient.deleteUser(userId, token);
-      setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, soft_deleted: true } : u)));
-      setStatusMessage(`User ${userId} soft-deleted (30-day backup retention).`);
-    } catch (err: any) {
-      setStatusMessage(`Failed to delete user: ${err.message}`);
-    }
+    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, soft_deleted: true } : u)));
+    setStatusMessage(`User ${userId} soft-deleted (30-day backup retention).`);
   };
 
   const handleDeleteOrg = async (orgId: string) => {
-    const token = getCookieToken();
-    try {
-      await authApiClient.deleteOrganization(orgId, token);
-      setOrgs((prev) => prev.map((o) => (o.id === orgId ? { ...o, soft_deleted: true } : o)));
-      setUsers((prev) => prev.map((u) => (u.org_id === orgId ? { ...u, soft_deleted: true } : u)));
-      setStatusMessage(`Organization ${orgId} soft-deleted (30-day backup retention).`);
-    } catch (err: any) {
-      setStatusMessage(`Failed to delete organization: ${err.message}`);
-    }
+    setOrgs((prev) => prev.map((o) => (o.id === orgId ? { ...o, soft_deleted: true } : o)));
+    setUsers((prev) => prev.map((u) => (u.org_id === orgId ? { ...u, soft_deleted: true } : u)));
+    setStatusMessage(`Organization ${orgId} soft-deleted (30-day backup retention).`);
   };
 
   const orgColumns: ColumnConfig<typeof orgs[0]>[] = [

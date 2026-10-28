@@ -1,27 +1,22 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState } from 'react';
 import { Building2 } from 'lucide-react';
-import { authActions } from '../../features/auth/auth.slice';
 import { SearchableDropdown, type DropdownItem } from '../ui/SearchableDropdown';
 
 export function OrgSwitcher() {
-  const dispatch = useDispatch();
-  const authUser = useSelector((state: any) => state?.auth?.user);
-  const userOrganizations = useSelector((state: any) => state?.auth?.userOrganizations || []);
-
-  const activeOrgId = authUser?.org_id;
-
-  useEffect(() => {
-    dispatch(authActions.fetchOrganizationsSubmitted());
-  }, [dispatch]);
+  const [activeOrgId, setActiveOrgId] = useState('org-scaibu');
+  const userOrganizations = [
+    { id: 'org-scaibu', name: 'Scaibu Inc.' },
+    { id: 'org-staging', name: 'Staging Environment' },
+  ];
 
   const handleSwitch = (orgId: string) => {
     if (orgId && orgId !== activeOrgId) {
-      dispatch(authActions.switchOrganizationSubmitted({ orgId }));
+      setActiveOrgId(orgId);
     }
   };
+
 
   const orgItems: DropdownItem[] = userOrganizations.length > 0
     ? userOrganizations.map((o: any) => ({

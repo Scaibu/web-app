@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Filter, RotateCcw, Calendar, Cpu, Server, Layers } from 'lucide-react';
-import type { DashboardFilters, TimeRangeOption } from '../../hooks/useDashboardFilters';
+import type { DashboardFilters, TimeRangeOption } from '../../shared/ui/useDashboardFilters';
 
 export interface DashboardFilterBarProps {
   filters: DashboardFilters;

@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { SignInForm, authActions, type AuthState, AUTH_DEFAULT_FIXTURES, AUTH_ROUTES } from '../../../features/auth';
+import { SignInForm, authController } from '../../../features/auth';
+import { AUTH_DEFAULT_FIXTURES, AUTH_ROUTES } from '../../../shared/config/auth.config';
 
 function getClientCookieToken(): string | undefined {
   if (typeof document === 'undefined') return undefined;
@@ -14,30 +14,18 @@ function getClientCookieToken(): string | undefined {
 }
 
 export default function SignInPage() {
-  const dispatch = useDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') ?? AUTH_ROUTES.DASHBOARD;
 
-  const { status, error } = useSelector((state: any) => (state.auth || {}) as AuthState);
-
-  useEffect(() => {
-    const token = getClientCookieToken();
-    if (token) {
+  const handleSubmit = async (payload: { email: string; password?: string }) => {
+    if (payload.email) {
+      await authController.signIn({
+        email: payload.email,
+        password: payload.password || '',
+      });
       router.push(callbackUrl);
     }
-  }, [callbackUrl, router]);
-
-  useEffect(() => {
-    if (status === 'success') {
-      dispatch(authActions.resetAuthStatus());
-      router.push(callbackUrl);
-      router.refresh();
-    }
-  }, [status, router, callbackUrl, dispatch]);
-
-  const handleSubmit = (payload: { email: string; password?: string }) => {
-    dispatch(authActions.signInSubmitted(payload as any));
   };
 
   return (
@@ -45,8 +33,6 @@ export default function SignInPage() {
       <SignInForm
         initialEmail={AUTH_DEFAULT_FIXTURES.EMAIL}
         initialPassword={AUTH_DEFAULT_FIXTURES.PASSWORD}
-        loading={status === 'loading'}
-        errorMsg={error}
         onSubmit={handleSubmit}
       />
     </div>

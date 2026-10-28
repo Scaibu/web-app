@@ -1,12 +1,7 @@
-import { featureRegistry } from "@chief-strategist-j/shared-infra/store";
-import { authReducer } from "./auth.slice";
-import { authSaga } from "./auth.saga";
-
-featureRegistry.register("auth", { reducer: authReducer, saga: authSaga });
-
-export * from "./auth.constants";
-export * from "./auth.slice";
-export * from "./auth.saga";
+export * from "./models/auth.model";
+export * from "./adapter/auth.adapter";
+export * from "./state/auth.state";
+export * from "./controller/auth.controller";
 export * from "./ui/SignUpForm";
 export * from "./ui/SignInForm";
 export * from "./ui/RegisterOrgForm";
