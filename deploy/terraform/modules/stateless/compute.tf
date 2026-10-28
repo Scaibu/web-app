@@ -32,11 +32,6 @@ resource "google_cloud_run_v2_service" "web_app" {
       }
 
       env {
-        name  = "PORT"
-        value = tostring(var.service_port)
-      }
-
-      env {
         name  = "NEXTAUTH_URL"
         value = "https://${var.project_id}.web.app"
       }

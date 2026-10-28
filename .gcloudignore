@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.build/
+.git/
+.gitignore
+.env*
+coverage/
+storybook-static/
+*.tsbuildinfo
+*.log
+firebase-debug.log
+.terraform/
+.terraform.lock.hcl

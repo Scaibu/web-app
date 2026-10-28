@@ -48,11 +48,11 @@ gcloud services enable \
   --project="${PROJECT_ID}" --quiet
 
 # Phase 3: Build Container via Cloud Build (AMD64 Linux Native)
-echo "▶ Step 3/6: Building container image via Cloud Build [${IMAGE_NAME}]..."
+echo "▶ Step 3/7: Building container image via Cloud Build [${IMAGE_NAME}]..."
 gcloud builds submit \
   --project="${PROJECT_ID}" \
-  --tag="${IMAGE_NAME}" \
-  --file="deploy/docker/service/Dockerfile" \
+  --config="deploy/docker/cloudbuild.yaml" \
+  --substitutions="_IMAGE_NAME=${IMAGE_NAME}" \
   .
 
 # Fetch immutable digest of the built image
@@ -67,8 +67,25 @@ PREVIOUS_IMAGE="${CURRENT_IMAGE}"
 PREVIOUS_TIMESTAMP="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 EOF
 
-# Phase 4: Deploy to Cloud Run with Security Hardening
-echo "▶ Step 4/6: Deploying Cloud Run service [${SERVICE_NAME}]..."
+# Phase 4: Ensure Runtime Service Account Exists
+SA_EMAIL="sa-web-app@${PROJECT_ID}.iam.gserviceaccount.com"
+echo "▶ Step 4/7: Ensuring runtime service account [${SA_EMAIL}]..."
+if ! gcloud iam service-accounts describe "${SA_EMAIL}" --project="${PROJECT_ID}" &>/dev/null; then
+  echo "  Creating service account ${SA_EMAIL}..."
+  gcloud iam service-accounts create sa-web-app \
+    --description="LLM Obs Web App Runtime Service Account" \
+    --display-name="LLM Obs Web App Runtime Service Account" \
+    --project="${PROJECT_ID}"
+  gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+    --member="serviceAccount:${SA_EMAIL}" \
+    --role="roles/logging.logWriter" --quiet
+  gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+    --member="serviceAccount:${SA_EMAIL}" \
+    --role="roles/monitoring.metricWriter" --quiet
+fi
+
+# Phase 5: Deploy to Cloud Run with Security Hardening
+echo "▶ Step 5/7: Deploying Cloud Run service [${SERVICE_NAME}]..."
 gcloud run deploy "${SERVICE_NAME}" \
   --project="${PROJECT_ID}" \
   --region="${REGION}" \
@@ -77,7 +94,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   --port=31400 \
   --allow-unauthenticated \
   --service-account="sa-web-app@${PROJECT_ID}.iam.gserviceaccount.com" \
-  --set-env-vars="NODE_ENV=production,PORT=31400,AUTH_TRUST_HOST=true,NEXTAUTH_URL=https://${PROJECT_ID}.web.app" \
+  --set-env-vars="NODE_ENV=production,AUTH_TRUST_HOST=true,NEXTAUTH_URL=https://${PROJECT_ID}.web.app" \
   --cpu=1 \
   --memory=1024Mi \
   --min-instances=1 \

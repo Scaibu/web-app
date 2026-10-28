@@ -1,15 +1,15 @@
 # syntax=docker/dockerfile:1.7
-ARG BASE_IMAGE=node:22.11.0-slim@sha256:d8c55dc4da28b7e06bc86a5b6d5180f682855fb21e7208cfd2bf16a5e1eb2c64
-ARG BUILDER_IMAGE=node:22.11.0-slim@sha256:d8c55dc4da28b7e06bc86a5b6d5180f682855fb21e7208cfd2bf16a5e1eb2c64
+ARG BASE_IMAGE=node:22-slim@sha256:4b150b48b4116e2a22f2c39cc27025fbf4f153e2078fd3b14d159fdb5c7279da
+ARG BUILDER_IMAGE=node:22-slim@sha256:4b150b48b4116e2a22f2c39cc27025fbf4f153e2078fd3b14d159fdb5c7279da
 
 # ---------- Stage 1: Builder ----------
 FROM ${BUILDER_IMAGE} AS builder
 ARG SERVICE_PATH=.
-ENV NODE_ENV=production
 WORKDIR /build
 
 COPY package.json package-lock.json* ./
-RUN npm ci --include=dev
+COPY vendor/ ./vendor/
+RUN npm install
 
 COPY . ./
 RUN npm run build \
@@ -32,6 +32,7 @@ COPY --from=builder --chown=${UID}:${GID} /build/package.json ./package.json
 COPY --from=builder --chown=${UID}:${GID} /build/node_modules ./node_modules
 COPY --from=builder --chown=${UID}:${GID} /build/.build ./.build
 COPY --from=builder --chown=${UID}:${GID} /build/public ./public
+COPY --from=builder --chown=${UID}:${GID} /build/next.config.ts ./next.config.ts
 
 ARG GIT_SHA=unknown
 ARG BUILD_DATE=unknown
