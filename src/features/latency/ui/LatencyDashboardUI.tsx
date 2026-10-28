@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Clock, Zap, AlertTriangle, Activity, Server, Cpu } from 'lucide-react';
-import type { PercentilesResult, SLOResult, AttributionResult, BaselinePoint } from '../types';
+import type { PercentilesResult, SLOResult, AttributionResult, BaselinePoint } from '../models/latency.model';
 
 export interface LatencyDashboardUIProps {
   percentiles: PercentilesResult | null;

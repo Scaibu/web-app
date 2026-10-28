@@ -1,14 +1,11 @@
 'use client';
 
 import React, { Suspense } from 'react';
-import { useDashboardFilters } from '../../../hooks/useDashboardFilters';
+import { useDashboardFilters } from '../../../shared/ui/useDashboardFilters';
 import { DashboardFilterBar } from '../../../components/forms/DashboardFilterBar';
-import { useLatencyDashboardData } from '@/features/latency/hooks';
-import { LatencyDashboardUI } from '@/features/latency/ui/LatencyDashboardUI';
-
+import { LatencyView } from '@/features/latency';
 function LatencyDashboardContent() {
   const { filters, setFilter, resetFilters, hasActiveFilters } = useDashboardFilters();
-  const { percentiles, slo, attribution, baseline, loading, error } = useLatencyDashboardData(filters);
 
   return (
     <div className="flex flex-col gap-6">
@@ -19,14 +16,7 @@ function LatencyDashboardContent() {
         hasActiveFilters={hasActiveFilters}
       />
 
-      <LatencyDashboardUI
-        percentiles={percentiles}
-        slo={slo}
-        attribution={attribution}
-        baseline={baseline}
-        loading={loading}
-        error={error}
-      />
+      <LatencyView filters={filters} />
     </div>
   );
 }

@@ -25,3 +25,10 @@ export interface AttributionResult {
   queue: number;
   inference: number;
 }
+
+export interface LatencyFilterModel {
+  model?: string;
+  timeRange?: string;
+  service?: string;
+  environment?: string;
+}

@@ -1,15 +1,6 @@
-import { featureRegistry } from "@chief-strategist-j/shared-infra/store";
-import { latencyReducer } from "./latency.slice";
-import { latencySaga } from "./latency.saga";
-
-featureRegistry.register("latency", { reducer: latencyReducer, saga: latencySaga });
-
-export * from "./types";
-export * from "./schema";
-export * from "./queries";
-export * from "./rules";
-export * from "./service";
-export * from "./constants";
-export * from "./latency.slice";
-export * from "./latency.saga";
-
+export * from "./models/latency.model";
+export * from "./adapter/latency.adapter";
+export * from "./state/latency.state";
+export * from "./controller/latency.controller";
+export * from "./ui/LatencyDashboardUI";
+export * from "./ui/latency.view";
