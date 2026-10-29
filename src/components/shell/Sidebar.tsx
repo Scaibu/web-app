@@ -27,6 +27,10 @@ import {
   Building2,
   Users,
   Settings,
+  Compass,
+  BellRing,
+  Sparkles,
+  Zap,
 } from 'lucide-react';
 
 interface NavItem {
@@ -50,7 +54,16 @@ const NAV_GROUPS: readonly { title: string; items: readonly NavItem[] }[] = [
       { label: 'Agentic Tools', href: '/agents', icon: Workflow },
       { label: 'Sessions', href: '/sessions', icon: MessagesSquare },
       { label: 'RAG Context', href: '/rag', icon: Database },
+      { label: 'Semantic Cache', href: '/cache', icon: Zap },
       { label: 'Prompts', href: '/prompts', icon: MessageSquareCode },
+      { label: 'Golden Datasets', href: '/datasets', icon: Sparkles },
+    ],
+  },
+  {
+    title: 'Developer & Integrations',
+    items: [
+      { label: 'SDK Quickstart', href: '/onboarding', icon: Compass },
+      { label: 'Alert Sinks', href: '/settings/integrations', icon: BellRing },
     ],
   },
   {
