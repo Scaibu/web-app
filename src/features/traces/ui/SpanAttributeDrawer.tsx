@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Copy, Check, Clock, Tag, Code, Terminal, Layers } from 'lucide-react';
+import { X, Copy, Check, Clock, Tag, Code, Terminal, Layers, MessageSquarePlus } from 'lucide-react';
 import type { SpanNode } from '../models/traces.model';
 import { TRACES_TEXT, OTEL_ATTRIBUTES } from '../../../shared/config/traces.config';
 import { renderAttribute } from './attribute-renderers';
+import { annotationsController } from '../../annotations/controller/annotations.controller';
+import { AnnotationDrawer } from '../../annotations/ui/AnnotationDrawer';
 
 export interface SpanAttributeDrawerProps {
   span: SpanNode | null;
@@ -63,13 +65,26 @@ export function SpanAttributeDrawer({
               </div>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))] transition-colors"
-            aria-label={TRACES_TEXT.DRAWER_CLOSE}
-          >
-            <X size={18} />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const completionStr = completionSnippet !== undefined ? String(completionSnippet) : undefined;
+                annotationsController.openAnnotationFlow(span.id, span.name, completionStr);
+              }}
+              className="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-primary/10 text-primary hover:bg-primary/20 border border-primary/30 flex items-center gap-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              <MessageSquarePlus className="w-3.5 h-3.5" />
+              <span>Annotate</span>
+            </button>
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))] transition-colors"
+              aria-label={TRACES_TEXT.DRAWER_CLOSE}
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-5 space-y-6">
@@ -213,6 +228,9 @@ export function SpanAttributeDrawer({
           )}
         </div>
       </div>
+
+      {/* Human-in-the-Loop Annotation Drawer */}
+      <AnnotationDrawer />
     </div>
   );
 }
